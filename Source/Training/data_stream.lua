@@ -46,6 +46,7 @@ function DataStream:__init(street)
   local numfiles = 0
 
   local goodfiles = {}
+  local new_name_file = {}
 
   for filename,_ in pairs(filenames) do
     local res = string.find(filename, ".inputs")
@@ -54,12 +55,66 @@ function DataStream:__init(street)
       if filenames[targetname] ~= nil then
         numfiles = numfiles + 1
         goodfiles[numfiles] = filename:sub(0,res)
+		new_name_file[goodfiles[numfiles]] = true
       end
     end
   end
 
   self.goodfiles = goodfiles
-  print(numfiles .. " good files")
+
+  local path = arguments.model_path
+  if game_settings.nl then
+    path = path .. "NoLimit/"
+  else
+    path = path .. "Limit/"
+  end
+
+  local good_files_name = path .. '/good_files.table'
+	local f = io.open('good_files.table', "r")
+	if f then
+		f:close() 
+		local arr = torch.load('good_files.table')
+		print("list of good files loaded from backup")		
+		
+		for i=1, arr['numfiles'] do
+			new_name_file[arr[i]] = false		
+		end
+		
+		-- insert old train data
+		local id = 0
+		local goodfiles_complete = {}
+		for i=1, arr['num_train'] do
+			id = id + 1
+			goodfiles_complete[id] = arr[i]
+		end
+		
+		-- insert new data in middle
+		local new_data_num =  0
+		for i=1, numfiles do
+			local name = self.goodfiles[i]
+			if new_name_file[name] then
+				id = id + 1
+				goodfiles_complete[id] = name
+				new_data_num = new_data_num + 1
+			end
+		end
+		
+		-- insert old valid data
+		for i=arr['num_train'] + 1, arr['numfiles'] do
+			id = id + 1
+			goodfiles_complete[id] = arr[i]
+		end
+		
+		self.goodfiles = goodfiles_complete
+		
+		print(arr['num_train'] .. " old train files")
+		print(arr['num_valid'] .. " old valid files")
+		print(new_data_num .. " new data files")
+		print((arr['num_train'] + arr['num_valid'] + new_data_num) .. " total files")
+		print(id .. " is max id file")
+	end
+	
+  print(numfiles .. " all good files")
 
   self.bucket_count = bucketer:get_bucket_count(street)
   self.target_size = self.bucket_count * constants.players_count
@@ -71,8 +126,16 @@ function DataStream:__init(street)
   local train_count = num_train * arguments.gen_batch_size
   local valid_count = num_valid * arguments.gen_batch_size
 
+  self.goodfiles['num_train'] = num_train
+  self.goodfiles['num_valid'] = num_valid
+  self.goodfiles['train_count'] = train_count
+  self.goodfiles['valid_count'] = valid_count
+  self.goodfiles['numfiles'] = numfiles
+
+  torch.save(good_files_name, self.goodfiles)
+  
   self.train_data_count = train_count
-  assert(self.train_data_count >= arguments.train_batch_size, 'Training data count has to be greater than a train batch size!')
+  assert(self.train_data_count >= arguments.train_batch_size, 'Training data count has to be greater than a train batch size! train_count: ' .. self.train_data_count .. '   train_batch_count: ' .. arguments.train_batch_size)
   self.train_batch_count = self.train_data_count / arguments.train_batch_size
   self.valid_data_count = valid_count
   assert(self.valid_data_count >= arguments.train_batch_size, 'Validation data count has to be greater than a train batch size!')

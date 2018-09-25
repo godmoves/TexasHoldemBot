@@ -58,10 +58,24 @@ end
 -- @param bucket_range a vector in which to save the resulting probability
 -- vector over buckets
 function BucketConversion:card_range_to_bucket_range(card_range, bucket_range)
+  if arguments.gpu then
+    card_range = card_range:cuda()
+  else
+    card_range = card_range:float()
+  end
+  
   bucket_range:mm(card_range, self._range_matrix)
 end
 
 function BucketConversion:hand_cfvs_to_bucket_cfvs(card_range, card_cfvs, bucket_range, bucketed_cfvs)
+  if arguments.gpu then
+    card_range = card_range:cuda()
+    card_cfvs = card_cfvs:cuda()
+  else
+    card_range = card_range:float()
+    card_cfvs = card_cfvs:float()
+  end
+  
   bucketed_cfvs:mm(torch.cmul(card_range,card_cfvs), self._range_matrix)
 
   -- avoid divide by 0

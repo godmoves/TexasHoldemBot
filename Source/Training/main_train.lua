@@ -16,6 +16,14 @@ end
 local street = tonumber(arg[1])
 local network = nnBuilder:build_net(street)
 
+local f = io.open("nn.model", "r")
+if f then
+        f:close() 
+	network = torch.load("nn.model")
+	print("nn.model loaded from backup")
+end
+	
+
 if arguments.gpu then
   network = network:cuda()
 end

@@ -28,20 +28,28 @@ function M:_init()
     end
   end
   if self._texas_lookup == nil then
-    local f = assert(io.open("./Game/Evaluation/HandRanks.dat", "rb"))
-    local data = f:read("*all")
-    self._texas_lookup = arguments.Tensor(string.len(data) / 4):fill(0):long()
+
+    local file_found=io.open("./Game/Evaluation/HandRanksTensor.dat", "r")
+    if file_found ~= nill then
+      io.close(file_found)
+      self._texas_lookup = torch.load("./Game/Evaluation/HandRanksTensor.dat")
+      print("loaded HandRanksTensor Tensor")
+    else
+      local f = assert(io.open("./Game/Evaluation/HandRanks.dat", "rb"))
+      local data = f:read("*all")
+      self._texas_lookup = arguments.Tensor(string.len(data) / 4):fill(0):long()
+      for i = 1, string.len(data), 4 do
+        local num = 0
+        for j = i,i+3 do
+          num = num + data:byte(j) * (2 ^ ((j - i) * 8))
+        end
+        self._texas_lookup[(i - 1) / 4 + 1] = num
+      end
+      f:close()
+    end
     if arguments.gpu then
       self._texas_lookup = self._texas_lookup:cudaLong()
     end
-    for i = 1, string.len(data), 4 do
-      local num = 0
-      for j = i,i+3 do
-        num = num + data:byte(j) * (2 ^ ((j - i) * 8))
-      end
-      self._texas_lookup[(i - 1) / 4 + 1] = num
-    end
-    f:close()
   end
 end
 

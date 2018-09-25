@@ -18,11 +18,12 @@ local M = {}
 -- @param epoch the current epoch number
 -- @param valid_loss the validation loss of the current network
 -- @local
-function  M:_save_model(model, epoch, valid_loss)
+function  M:_save_model(model, epoch, valid_loss, learningRate)
 
   local model_information = {}
   model_information.epoch = epoch
   model_information.valid_loss = valid_loss
+  model_information.learningRate = learningRate
   model_information.gpu = arguments.gpu
 
   local path = arguments.model_path
@@ -36,6 +37,8 @@ function  M:_save_model(model, epoch, valid_loss)
   local information_file_name = path .. '/epoch_' .. epoch .. net_type_str .. '.info'
   torch.save(model_file_name, model)
   torch.save(information_file_name, model_information)
+  
+  torch.save(information_file_name .. '.txt', model_information, 'ascii')
 end
 
 --- Function passed to torch's [optim package](https://github.com/torch/optim).
@@ -82,6 +85,9 @@ function M:train(network, data_stream, epoch_count)
     M.criterion = M.criterion:cuda()
   end
 
+  M.min_validation_loss = 1.0
+  M.epoch_num_min_validation_loss = 0
+  
   local state = {learningRate = arguments.learning_rate}
   local lossSum = 0
   local optim_func = optim.adam
@@ -92,23 +98,33 @@ function M:train(network, data_stream, epoch_count)
     timer:reset()
     data_stream:start_epoch(epoch)
     lossSum = 0
+	local loss_min = 10000000.0
+	local loss_max = 0
 
     if epoch == 50 then
       state.learningRate = state.learningRate / 10
     end
+    
+    --state.learningRate = arguments.learning_rate 
+    
     M.network:evaluate(false)
     for i=1, data_stream:get_train_batch_count() do
       local inputs, targets, mask = data_stream:get_train_batch(i)
       assert(mask)
       local _, loss = optim_func(function (x) return feval(x, inputs, targets, mask) end, M.params, state)
       lossSum = lossSum + loss[1]
+	  loss_min = math.min(loss_min, loss[1])
+	  loss_max = math.max(loss_max, loss[1])
     end
 
-    print(string.format("Training loss: %f", lossSum / data_stream.train_batch_count))
+    print(string.format("Training loss  : %f  min: %f  max: %f  learningRate: %f", lossSum / data_stream.train_batch_count, loss_min, loss_max, state.learningRate))
 
     M.network:evaluate(true)
     --check validation loss
     local valid_loss_sum = 0
+	local valid_loss_min = 10000000.0
+	local valid_loss_max = 0
+	
     for i=1, data_stream:get_valid_batch_count() do
 
       local inputs, targets, mask = data_stream:get_valid_batch(i)
@@ -116,17 +132,38 @@ function M:train(network, data_stream, epoch_count)
       local outputs = M.network:forward(inputs)
       local loss = M.criterion:forward(outputs, targets, mask)
       valid_loss_sum = valid_loss_sum + loss
+	  valid_loss_min = math.min(valid_loss_min, loss)
+	  valid_loss_max = math.max(valid_loss_max, loss)
     end
 
     local valid_loss = valid_loss_sum / data_stream.valid_batch_count
-    print(string.format("Validation loss: %f", valid_loss))
-    print('Epoch took: ', timer:time().real)
+
+    local progress = math.floor((M.min_validation_loss / valid_loss - 1) * 100 * 1000) / 1000
+
+    if M.min_validation_loss > valid_loss then
+      M.min_validation_loss = valid_loss
+      M.epoch_num_min_validation_loss = epoch
+    end
+      
+      
+    print(string.format("Validation loss: %f  min: %f  max: %f", valid_loss, valid_loss_min, valid_loss_max))
+    print(string.format("Validation progress: %f     Last minimum found: %d epoch back", progress, epoch - M.epoch_num_min_validation_loss))
+	next_time = os.date('*t', os.time() + math.floor(timer:time().real))
+    print('Epoch took: ', timer:time().real, '  Timestamp: ' , os.date("%H:%M") .. ' +2h   next time: ' .. next_time.hour .. ':' .. next_time.min)
 
     --saving the model
-    print(epoch)
+    print(epoch .. ' / ' .. epoch_count)
     if epoch % arguments.save_epoch == 0 then
       print("SAVING MODEL")
-      self:_save_model(network, epoch, valid_loss)
+      self:_save_model(network, epoch, valid_loss, state.learningRate)
+      print("SAVED")
+      local f = io.open("learningRate.txt", "r")
+      if f then
+        local num = f:read("*number")
+        state.learningRate = num
+        f:close() 
+      end
+
     end
   end
   --end of train loop

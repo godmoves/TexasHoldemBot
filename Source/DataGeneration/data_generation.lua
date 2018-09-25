@@ -48,6 +48,9 @@ function M:generate_data_file(data_count, file_name, street)
   local mask = arguments.Tensor(batch_size, game_settings.hand_count):zero()
 
   local te = TerminalEquity()
+  local startTime = torch.Timer()
+  
+  startTime:reset()
   for batch = 1, batch_count do
     local timer = torch.Timer()
     timer:reset()
@@ -58,7 +61,7 @@ function M:generate_data_file(data_count, file_name, street)
     te:set_board(board)
     range_generator:set_board(te, board)
 
-    print('terminal time: ' .. timer:time().real)
+    --print('terminal time: ' .. timer:time().real)
     --generating ranges
     local ranges = arguments.Tensor(constants.players_count, batch_size, game_settings.hand_count)
     for player = 1, constants.players_count do
@@ -150,6 +153,9 @@ function M:generate_data_file(data_count, file_name, street)
 
     torch.save(arguments.data_path  .. train_folder .. basename .. '.inputs', inputs:float())
     torch.save(arguments.data_path  .. train_folder .. basename .. '.targets', targets:float())
+    
+    io.write('avgTime: ' .. (startTime:time().real / batch) .. '    ')
+    
   end
 end
 

@@ -105,7 +105,7 @@ function Lookahead:_compute()
   end
 
   for i=1,8 do
-    print(' ' .. i .. ': ' .. timings[i])
+    --print(' ' .. i .. ': ' .. timings[i])
   end
   --2.0 at the end normalize average strategy
   self:_compute_normalize_average_strategies()

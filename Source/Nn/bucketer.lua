@@ -19,79 +19,120 @@ local M = {}
 
 function M:_init()
   if self._ihr_pair_to_bucket == nil then
-    local f = assert(io.open("./Nn/Bucketing/riverihr.dat", "rb"))
-    local data = f:read("*all")
+    local file_found = io.open("./Nn/Bucketing/riverihrarray.dat", "r")
+    if file_found ~= nill then
+      io.close(file_found)
+      self._river_ihr = torch.load("./Nn/Bucketing/riverihrarray.dat")
+      print("1 loaded riverihrarray")
+    else
+      local f = assert(io.open("./Nn/Bucketing/riverihr.dat", "rb"))
+      local data = f:read("*all")
 
-    self._river_ihr = {}
-    for i = 1, string.len(data), 7 do
-      local key = 0
-      for j = i,i+4 do
-        key = key + data:byte(j) * (2 ^ ((4 - j + i) * 8))
+      self._river_ihr = {}
+      for i = 1, string.len(data), 7 do
+        local key = 0
+        for j = i,i+4 do
+          key = key + data:byte(j) * (2 ^ ((4 - j + i) * 8))
+        end
+        local win = data:byte(i+5)
+        local tie = data:byte(i+6)
+        self._river_ihr[key] = win*200 + tie
       end
-      local win = data:byte(i+5)
-      local tie = data:byte(i+6)
-      self._river_ihr[key] = win*200 + tie
+      f:close()
+      --torch.save('riverihrarray.dat', self._river_ihr)
     end
-    f:close()
-
-    local f = assert(io.open("./Nn/Bucketing/rcats.dat", "r"))
-    self.river_buckets = f:read("*number")
-    self._ihr_pair_to_bucket = {}
-    for i = 1, self.river_buckets do
-      local win = f:read("*number")
-      local tie = f:read("*number")
-      self._ihr_pair_to_bucket[win * 1000 + tie] = i
+    
+    file_found = io.open("./Nn/Bucketing/ihrpairtobucketrarray.dat", "r")
+    if file_found ~= nill then
+      io.close(file_found)
+      self._ihr_pair_to_bucket = torch.load("./Nn/Bucketing/ihrpairtobucketrarray.dat")
+      self.river_buckets = torch.load("./Nn/Bucketing/river_bucketsarray.dat")
+      print("2 loaded ihrpairtobucketrarray")
+    else
+      local f = assert(io.open("./Nn/Bucketing/rcats.dat", "r"))
+      self.river_buckets = f:read("*number")
+      self._ihr_pair_to_bucket = {}
+      for i = 1, self.river_buckets do
+        local win = f:read("*number")
+        local tie = f:read("*number")
+        self._ihr_pair_to_bucket[win * 1000 + tie] = i
+      end
+      f:close()
+      --torch.save('ihrpairtobucketrarray.dat', self._ihr_pair_to_bucket)
     end
-    f:close()
   end
 
   if self._turn_means == nil then
-    self._turn_means = {}
-    local f = assert(io.open("./Nn/Bucketing/turn_means.dat"))
-    local num_means = f:read("*number")
-    for i = 1,num_means do
-      local dist = {}
-      for j = 0,50 do
-        dist[j] = f:read("*number")
+    local file_found = io.open("./Nn/Bucketing/turn_meansarray.dat", "r")
+    if file_found ~= nill then
+      io.close(file_found)
+      self._turn_means = torch.load("./Nn/Bucketing/turn_meansarray.dat")
+      print("3 loaded turn_meansarray")
+    else
+      self._turn_means = {}
+      local f = assert(io.open("./Nn/Bucketing/turn_means.dat"))
+      local num_means = f:read("*number")
+      for i = 1,num_means do
+        local dist = {}
+        for j = 0,50 do
+          dist[j] = f:read("*number")
+        end
+        self._turn_means[i] = dist
       end
-      self._turn_means[i] = dist
+      f:close()
+    --torch.save('turn_meansarray.dat', self._turn_means)
     end
-    f:close()
   end
 
   if self._turn_cats == nil then
-    self._turn_cats = {}
-    local f = assert(io.open("./Nn/Bucketing/turn_dist_cats.dat", "rb"))
-    local data = f:read("*all")
+    local file_found = io.open("./Nn/Bucketing/turn_dist_catsarray.dat", "r")
+    if file_found ~= nill then
+      io.close(file_found)
+      self._turn_cats = torch.load("./Nn/Bucketing/turn_dist_catsarray.dat")
+      print("4 loaded turn_dist_catsarray")
+    else
+      self._turn_cats = {}
+      local f = assert(io.open("./Nn/Bucketing/turn_dist_cats.dat", "rb"))
+      local data = f:read("*all")
 
-    for i = 1, string.len(data), 6 do
-      local key = 0
-      for j = i,i+3 do
-        key = key + data:byte(j) * (2 ^ ((j - i) * 8))
+      for i = 1, string.len(data), 6 do
+        local key = 0
+        for j = i,i+3 do
+          key = key + data:byte(j) * (2 ^ ((j - i) * 8))
+        end
+        local cat = data:byte(i+4) + data:byte(i+5) * (2 ^ 8)
+        self._turn_cats[key] = cat
+
+        assert(cat <= 1000 and cat >= 1, "cat = " .. cat)
       end
-      local cat = data:byte(i+4) + data:byte(i+5) * (2 ^ 8)
-      self._turn_cats[key] = cat
-
-      assert(cat <= 1000 and cat >= 1, "cat = " .. cat)
+      f:close()
+      --torch.save('turn_dist_catsarray.dat', self._turn_cats)
     end
-    f:close()
   end
   if self._flop_cats == nil then
-    self._flop_cats = {}
-    local f = assert(io.open("./Nn/Bucketing/flop_dist_cats.dat", "rb"))
-    local data = f:read("*all")
+    local file_found = io.open("./Nn/Bucketing/flop_dist_catsarray.dat", "r")
+    if file_found ~= nill then
+      io.close(file_found)
+      self._flop_cats = torch.load("./Nn/Bucketing/flop_dist_catsarray.dat")
+      print("5 loaded flop_dist_catsarray")
+    else
+      self._flop_cats = {}
+      local f = assert(io.open("./Nn/Bucketing/flop_dist_cats.dat", "rb"))
+      local data = f:read("*all")
 
-    for i = 1, string.len(data), 6 do
-      local key = 0
-      for j = i,i+3 do
-        key = key + data:byte(j) * (2 ^ ((j - i) * 8))
+      for i = 1, string.len(data), 6 do
+        local key = 0
+        for j = i,i+3 do
+          key = key + data:byte(j) * (2 ^ ((j - i) * 8))
+        end
+        local cat = data:byte(i+4) + data:byte(i+5) * (2 ^ 8)
+        self._flop_cats[key] = cat
+
+        assert(cat <= 1000 and cat >= 1, "cat = " .. cat)
       end
-      local cat = data:byte(i+4) + data:byte(i+5) * (2 ^ 8)
-      self._flop_cats[key] = cat
-
-      assert(cat <= 1000 and cat >= 1, "cat = " .. cat)
+      f:close()
+      --torch.save('flop_dist_catsarray.dat', self._flop_cats)
     end
-    f:close()
   end
 end
 
