@@ -36,20 +36,22 @@ function loop_evaluation(continual_resolving, client, last_state, last_node)
   local betsize = adviced_action["raise_amount"]
   print(action_id)
   print(betsize)
+
+  local action
   if betsize ~= nil then
-    client:send(tostring(betsize))
+    action = tostring(betsize)
   elseif action_id == constants.acpc_actions.fold then
-    client:send("f")
+    action = "f"
   elseif action_id == constants.acpc_actions.ccall then
-    client:send("c")
+    action = "c"
   else
-    client:send("WTF")
+    action = "WTF"
   end
   last_state = state
   last_node = node
   collectgarbage();collectgarbage()
 
-  return "", continual_resolving, client, last_state, last_node
+  return action, continual_resolving, client, last_state, last_node
 
 end
 
@@ -80,15 +82,25 @@ while 1 do
 
   local v, msg, continual_resolving_l, client_l, last_state_l, last_node_l = pcall(loop_evaluation, continual_resolving, client, last_state, last_node)
 
-  continual_resolving = continual_resolving_l
-  client = client_l
-  last_state = last_state_l
-  last_node = last_node_l
+  print(v, msg)
 
-  if msg == "closed" then
-    print("client closed, waiting for new one")
-    client = server:accept()
-    print("accepted client")
+  if v then
+
+    continual_resolving = continual_resolving_l
+    client = client_l
+    last_state = last_state_l
+    last_node = last_node_l
+
+    if msg == "closed" then
+      print("client closed, waiting for new one")
+      client = server:accept()
+      print("accepted client")
+    else
+      client:send(msg)
+    end
+  
+  else
+    client:send("ERR")
   end
-
+  
 end

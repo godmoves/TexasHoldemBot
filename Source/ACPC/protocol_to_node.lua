@@ -285,7 +285,7 @@ function ACPCProtocolToNode:_process_parsed_state(parsed_state)
   local bet1
   local bet2
   bet1, bet2 = self:_compute_bets(out)
-  assert(bet1 <= bet2)
+  --assert(bet1 <= bet2)
 
   if out.position == constants.players.P1 then
     out.bet1 = bet1
