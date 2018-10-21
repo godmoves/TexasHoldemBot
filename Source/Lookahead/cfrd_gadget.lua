@@ -24,7 +24,7 @@ function CFRDGadget:__init(board, player_range, opponent_cfvs)
 
   self.curent_opponent_values = arguments.Tensor(game_settings.hand_count)
 
-  self.regret_epsilon = 1.0/100000000
+  self.regret_epsilon = 1.0 / 100000000
 
   self.play_current_strategy = arguments.Tensor(game_settings.hand_count):fill(0)
   self.terminate_current_strategy = arguments.Tensor(game_settings.hand_count):fill(1)

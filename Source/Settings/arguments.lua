@@ -42,7 +42,7 @@ params.model_path = '../Data/Models/'
 params.value_net_name = 'final'
 --- the neural net architecture
 params.net = '{nn.Linear(input_size, 500), nn.BatchNormalization(500), nn.PReLU(), nn.Linear(500, 500), nn.BatchNormalization(500), nn.PReLU(), nn.Linear(500, 500), nn.BatchNormalization(500), nn.PReLU(), nn.Linear(500, output_size)}'
---params.net = '{nn.Linear(input_size, 500), nn.PReLU(), nn.Linear(500, 500), nn.PReLU(), nn.Linear(500, 500), nn.PReLU(), nn.Linear(500, 500), nn.PReLU(), nn.Linear(500, 500), nn.PReLU(), nn.Linear(500, 500), nn.PReLU(), nn.Linear(500, 500), nn.PReLU(), nn.Linear(500, 500),  nn.PReLU(), nn.Linear(500, output_size)}'
+--params.net = '{nn.Linear(input_size, 500), nn.PReLU(), nn.Linear(500, 500), nn.PReLU(), nn.Linear(500, 500), nn.PReLU(), nn.Linear(500, 500), nn.PReLU(), nn.Linear(500, 500), nn.PReLU(), nn.Linear(500, 500), nn.PReLU(), nn.Linear(500, 500), nn.PReLU(), nn.Linear(500, 500), nn.PReLU(), nn.Linear(500, output_size)}'
 --params.net = '{nn.Linear(input_size, 500), nn.BatchNormalization(500), nn.PReLU(), nn.Linear(500, 500), nn.BatchNormalization(500), nn.PReLU(), nn.Linear(500, 500), nn.BatchNormalization(500), nn.PReLU(), nn.Linear(500, 500), nn.BatchNormalization(500), nn.PReLU(), nn.Linear(500, 500), nn.BatchNormalization(500), nn.PReLU(), nn.Linear(500, 500), nn.BatchNormalization(500), nn.PReLU(), nn.Linear(500, 500), nn.BatchNormalization(500), nn.PReLU(), nn.Linear(500, 500), nn.BatchNormalization(500), nn.PReLU(), nn.Linear(500, output_size)}'
 --- how often to save the model during training
 params.save_epoch = 1
@@ -50,8 +50,6 @@ params.save_epoch = 1
 params.epoch_count = 1000
 --- how many solved poker situations are generated for use as training examples
 params.train_data_count = 150000
---- how many solved poker situations are generated for use as validation examples
-params.valid_data_count = 150000
 --- learning rate for neural net training
 params.learning_rate = 0.001
 

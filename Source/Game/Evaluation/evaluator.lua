@@ -133,7 +133,7 @@ function M:evaluate(hand, impossible_hand_value)
   elseif hand:size(1) == 7 then
     return self:evaluate_seven_card_hand(hand)
   else
-    assert(false, 'unsupported size of hand!' )
+    assert(false, 'unsupported size of hand!')
   end
 end
 
@@ -161,7 +161,7 @@ function M:batch_eval(board, impossible_hand_value)
     end
   else
     local board_size = board:size(1)
-    assert(board_size == 1 or board_size == 2 or board_size == 5, 'Incorrect board size for Leduc' )
+    assert(board_size == 1 or board_size == 2 or board_size == 5, 'Incorrect board size for Leduc')
 
     local whole_hand = arguments.Tensor(board_size + game_settings.hand_card_count)
     whole_hand[{{1, -1 - game_settings.hand_card_count}}]:copy(board)
@@ -189,7 +189,8 @@ function M:batch_eval(board, impossible_hand_value)
 end
 
 function M:batch_eval_fast(board)
-  if board:dim() == 0 then -- kuhn poker
+  -- kuhn poker
+  if board:dim() == 0 then
     return nil
   elseif board:dim() == 2 then
     local batch_size = board:size(1)
@@ -199,7 +200,7 @@ function M:batch_eval_fast(board)
     end
     hands[{{},{},{1,board:size(2)}}]:copy(
       board:view(batch_size, 1, board:size(2))
-           :expand(batch_size, game_settings.hand_count, board:size(2)))
+          :expand(batch_size, game_settings.hand_count, board:size(2)))
     hands[{{},{},{-2,-1}}]:copy(
       self._idx_to_cards:view(1, game_settings.hand_count, game_settings.hand_card_count)
                         :expand(batch_size, game_settings.hand_count, game_settings.hand_card_count))

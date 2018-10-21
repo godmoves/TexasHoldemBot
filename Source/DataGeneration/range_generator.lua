@@ -35,7 +35,7 @@ function RangeGenerator:_generate_recursion(cards, mass)
     local mass2 = mass -mass1
     local halfSize = card_count/2
     --if the tensor contains an odd number of cards, randomize which way the
-	--middle card goes
+    --middle card goes
     if halfSize % 1 ~= 0 then
       halfSize = halfSize - 0.5
       halfSize = halfSize + torch.random(0,1)

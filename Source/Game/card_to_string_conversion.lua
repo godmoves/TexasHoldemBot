@@ -35,7 +35,7 @@ M.card_to_string_table ={}
 for card = 1, game_settings.card_count do
   local rank_name = M.rank_table[M:card_to_rank(card)]
   local suit_name = M.suit_table[M:card_to_suit(card)]
-  M.card_to_string_table[card] =  rank_name .. suit_name
+  M.card_to_string_table[card] = rank_name .. suit_name
 end
 
 --- Holds the numeric representation for every possible card, indexed by its

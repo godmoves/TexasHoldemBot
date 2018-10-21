@@ -1,2 +1,5 @@
 **/a.out
 **/.DS_Store
+*.targets
+*.inputs
+Source/Game/Evaluation/HandRanks.dat

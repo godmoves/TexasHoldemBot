@@ -18,7 +18,7 @@ local network = nnBuilder:build_net(street)
 
 local f = io.open("nn.model", "r")
 if f then
-        f:close() 
+  f:close() 
 	network = torch.load("nn.model")
 	print("nn.model loaded from backup")
 end

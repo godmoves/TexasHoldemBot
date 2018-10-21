@@ -105,7 +105,7 @@ function M:generate_data_file(data_count, file_name, street)
     local pot_size_feature = game_settings.nl and (random_pot_size / arguments.stack) or (random_pot_size / max_pot[3])
 
     --translating ranges to features
-    local pot_feature_index =  -1
+    local pot_feature_index = -1
     inputs[{{}, pot_feature_index}]:fill(pot_size_feature)
 
     local player_indexes = {{1, game_settings.hand_count}, {game_settings.hand_count + 1, game_settings.hand_count * 2}}
@@ -151,8 +151,8 @@ function M:generate_data_file(data_count, file_name, street)
       train_folder = "Limit/"
     end
 
-    torch.save(arguments.data_path  .. train_folder .. basename .. '.inputs', inputs:float())
-    torch.save(arguments.data_path  .. train_folder .. basename .. '.targets', targets:float())
+    torch.save(arguments.data_path .. train_folder .. basename .. '.inputs', inputs:float())
+    torch.save(arguments.data_path .. train_folder .. basename .. '.targets', targets:float())
     
     io.write('avgTime: ' .. (startTime:time().real / batch) .. '    ')
     

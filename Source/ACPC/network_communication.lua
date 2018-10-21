@@ -29,7 +29,7 @@ end
 --- Sends a handshake message to initialize network communication.
 -- @local
 function ACPCNetworkCommunication:_handshake()
-    self:send_line("VERSION:2.0.0")
+  self:send_line("VERSION:2.0.0")
 end
 
 --- Sends a message to the server.
@@ -41,14 +41,14 @@ end
 --- Waits for a text message from the server. Blocks until a message is
 -- received.
 -- @return the message received
-function ACPCNetworkCommunication:get_line()  
-  local out, status = self.connection:receive('*l')  
+function ACPCNetworkCommunication:get_line()
+  local out, status = self.connection:receive('*l')
   
-  assert(status ~= "closed")  
+  assert(status ~= "closed")
   return out
 end
 
 --- Ends the network communication.
-function ACPCNetworkCommunication:close()  
+function ACPCNetworkCommunication:close()
   self.connection:close()
 end

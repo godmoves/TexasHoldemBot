@@ -171,8 +171,8 @@ function M:generate_data_file(data_count, file_name, street)
     else
       train_folder = "Limit/"
     end
-    torch.save(arguments.data_path  .. train_folder ..  basename .. '.inputs', input_batch:float())
-    torch.save(arguments.data_path  .. train_folder ..  basename .. '.targets', target_batch:float())
+    torch.save(arguments.data_path .. train_folder .. basename .. '.inputs', input_batch:float())
+    torch.save(arguments.data_path .. train_folder .. basename .. '.targets', target_batch:float())
   end
 end
 

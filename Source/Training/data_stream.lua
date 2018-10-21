@@ -55,7 +55,7 @@ function DataStream:__init(street)
       if filenames[targetname] ~= nil then
         numfiles = numfiles + 1
         goodfiles[numfiles] = filename:sub(0,res)
-		new_name_file[goodfiles[numfiles]] = true
+        new_name_file[goodfiles[numfiles]] = true
       end
     end
   end
@@ -70,50 +70,50 @@ function DataStream:__init(street)
   end
 
   local good_files_name = path .. '/good_files.table'
-	local f = io.open('good_files.table', "r")
-	if f then
-		f:close() 
-		local arr = torch.load('good_files.table')
-		print("list of good files loaded from backup")		
-		
-		for i=1, arr['numfiles'] do
-			new_name_file[arr[i]] = false		
-		end
-		
-		-- insert old train data
-		local id = 0
-		local goodfiles_complete = {}
-		for i=1, arr['num_train'] do
-			id = id + 1
-			goodfiles_complete[id] = arr[i]
-		end
-		
-		-- insert new data in middle
-		local new_data_num =  0
-		for i=1, numfiles do
-			local name = self.goodfiles[i]
-			if new_name_file[name] then
-				id = id + 1
-				goodfiles_complete[id] = name
-				new_data_num = new_data_num + 1
-			end
-		end
-		
-		-- insert old valid data
-		for i=arr['num_train'] + 1, arr['numfiles'] do
-			id = id + 1
-			goodfiles_complete[id] = arr[i]
-		end
-		
-		self.goodfiles = goodfiles_complete
-		
-		print(arr['num_train'] .. " old train files")
-		print(arr['num_valid'] .. " old valid files")
-		print(new_data_num .. " new data files")
-		print((arr['num_train'] + arr['num_valid'] + new_data_num) .. " total files")
-		print(id .. " is max id file")
-	end
-	
+  local f = io.open('good_files.table', "r")
+  if f then
+    f:close() 
+    local arr = torch.load('good_files.table')
+    print("list of good files loaded from backup")
+    
+    for i=1, arr['numfiles'] do
+      new_name_file[arr[i]] = false
+    end
+    
+    -- insert old train data
+    local id = 0
+    local goodfiles_complete = {}
+    for i=1, arr['num_train'] do
+      id = id + 1
+      goodfiles_complete[id] = arr[i]
+    end
+    
+    -- insert new data in middle
+    local new_data_num = 0
+    for i=1, numfiles do
+      local name = self.goodfiles[i]
+      if new_name_file[name] then
+        id = id + 1
+        goodfiles_complete[id] = name
+        new_data_num = new_data_num + 1
+      end
+    end
+    
+    -- insert old valid data
+    for i=arr['num_train'] + 1, arr['numfiles'] do
+      id = id + 1
+      goodfiles_complete[id] = arr[i]
+    end
+    
+    self.goodfiles = goodfiles_complete
+    
+    print(arr['num_train'] .. " old train files")
+    print(arr['num_valid'] .. " old valid files")
+    print(new_data_num .. " new data files")
+    print((arr['num_train'] + arr['num_valid'] + new_data_num) .. " total files")
+    print(id .. " is max id file")
+  end
+  
   print(numfiles .. " all good files")
 
   self.bucket_count = bucketer:get_bucket_count(street)
@@ -187,7 +187,7 @@ end
 -- @return the targets set for the batch
 -- @return the masks set for the batch
 -- @local
-function  DataStream:get_batch(batch_index)
+function DataStream:get_batch(batch_index)
 
   local inputs = arguments.Tensor(arguments.train_batch_size, self.input_size)
   local targets = arguments.Tensor(arguments.train_batch_size, self.target_size)
@@ -224,7 +224,7 @@ end
 -- @return the inputs set for the batch
 -- @return the targets set for the batch
 -- @return the masks set for the batch
-function  DataStream:get_train_batch(batch_index)
+function DataStream:get_train_batch(batch_index)
     return self:get_batch(batch_index)
 end
 
@@ -233,6 +233,6 @@ end
 -- @return the inputs set for the batch
 -- @return the targets set for the batch
 -- @return the masks set for the batch
-function  DataStream:get_valid_batch(batch_index)
+function DataStream:get_valid_batch(batch_index)
   return self:get_batch(self.train_batch_count + batch_index)
 end

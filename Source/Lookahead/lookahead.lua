@@ -104,9 +104,6 @@ function Lookahead:_compute()
     timer:reset()
   end
 
-  for i=1,8 do
-    --print(' ' .. i .. ': ' .. timings[i])
-  end
   --2.0 at the end normalize average strategy
   self:_compute_normalize_average_strategies()
   --2.1 normalize root's CFVs
@@ -123,7 +120,7 @@ function Lookahead:_compute_current_strategies()
     --1.0 set regret of empty actions to 0
     self.positive_regrets_data[d]:cmul(self.empty_action_mask[d])
 
-    --1.1  regret matching
+    --1.1 regret matching
     --note that the regrets as well as the CFVs have switched player indexing
     torch.sum(self.regrets_sum[d], self.positive_regrets_data[d], 1)
     local player_current_strategy = self.current_strategy_data[d]
@@ -325,7 +322,7 @@ function Lookahead:_compute_terminal_equities()
 
   self:_compute_terminal_equities_terminal_equity()
   --multiply by pot scale factor
-  for d=2,self.depth do
+  for d = 2, self.depth do
     self.cfvs_data[d]:cmul(self.pot_size[d])
   end
 end
@@ -334,7 +331,7 @@ end
 -- values, computes their cfvs at all states of the lookahead.
 -- @local
 function Lookahead:_compute_cfvs()
-  for d=self.depth,2,-1 do
+  for d = self.depth, 2, -1 do
     local gp_layer_terminal_actions_count = self.terminal_actions_count[d-2]
     local ggp_layer_nonallin_bets_count = self.nonallinbets_count[d-3]
 
@@ -423,10 +420,9 @@ function Lookahead:_compute_regrets()
     self.regrets_data[d]:add(self.regrets_data[d], current_regrets)
 
     --(CFR+)
-    self.regrets_data[d]:clamp(0,  tools:max_number())
+    self.regrets_data[d]:clamp(0, tools:max_number())
   end
 end
-
 
 --- Gets the results of re-solving the lookahead.
 --

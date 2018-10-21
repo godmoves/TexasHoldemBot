@@ -44,34 +44,36 @@ function BetSizing:get_possible_bets(node)
     out[1][current_player] = opponent_bet + min_raise_size
     return out
   else
-     --iterate through all bets and check if they are possible
+    --iterate through all bets and check if they are possible
 
-     local fractions = {}
-     if node.num_bets == 0 then
-       fractions = self.pot_fractions[1]
-     elseif node.num_bets == 1 then
-       fractions = self.pot_fractions[2]
-     else
-       fractions = self.pot_fractions[3]
-     end
-     local max_possible_bets_count = #fractions + 1 --we can always go allin
-     local out = arguments.Tensor(max_possible_bets_count,2):fill(opponent_bet)
+    local fractions = {}
+    if node.num_bets == 0 then
+      fractions = self.pot_fractions[1]
+    elseif node.num_bets == 1 then
+      fractions = self.pot_fractions[2]
+    else
+      fractions = self.pot_fractions[3]
+    end
+    
+    --we can always go allin
+    local max_possible_bets_count = #fractions + 1
+    local out = arguments.Tensor(max_possible_bets_count,2):fill(opponent_bet)
 
-     --take pot size after opponent bet is called
-     local pot = opponent_bet * 2
-     local used_bets_count = 0;
-     --try all pot fractions bet and see if we can use them
-     for i = 1, #fractions  do
-       local raise_size = pot * fractions[i]
-       if raise_size >= min_raise_size and raise_size < max_raise_size then
-         used_bets_count = used_bets_count + 1
-         out[{used_bets_count, current_player}] = opponent_bet + raise_size
-       end
-     end
-     --adding allin
-     used_bets_count  = used_bets_count + 1
-     assert(used_bets_count <= max_possible_bets_count)
-     out[{used_bets_count, current_player}] = opponent_bet + max_raise_size
-     return out[{{1, used_bets_count}, {}}]
+    --take pot size after opponent bet is called
+    local pot = opponent_bet * 2
+    local used_bets_count = 0;
+      --try all pot fractions bet and see if we can use them
+    for i = 1, #fractions do
+      local raise_size = pot * fractions[i]
+      if raise_size >= min_raise_size and raise_size < max_raise_size then
+        used_bets_count = used_bets_count + 1
+        out[{used_bets_count, current_player}] = opponent_bet + raise_size
+      end
+    end
+    --adding allin
+    used_bets_count = used_bets_count + 1
+    assert(used_bets_count <= max_possible_bets_count)
+    out[{used_bets_count, current_player}] = opponent_bet + max_raise_size
+    return out[{{1, used_bets_count}, {}}]
   end
 end

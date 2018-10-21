@@ -21,8 +21,8 @@ end
 -- @param start the substring to check as the prefix of `String`
 -- @return `true` if `start` is a prefix of `string`
 -- @local
-function string.starts(string,start)
-   return string.sub(string,1,string.len(start))==start
+function string.starts(string, start)
+  return string.sub(string, 1, string.len(start)) == start
 end
 
 --- Parses a list of actions from a string representation.
@@ -61,7 +61,6 @@ function ACPCProtocolToNode:_parse_actions(actions)
     assert(#parsed_chunk > 0)
     actions_remainder = string.sub(actions_remainder, #parsed_chunk + 1)
   end
-
 
   return out
 end
@@ -379,7 +378,7 @@ end
 -- @local
 function ACPCProtocolToNode:_get_acting_player(processed_state)
 
-  if #processed_state.all_actions == 0  then
+  if #processed_state.all_actions == 0 then
     assert(processed_state.current_street == 1)
     return constants.players.P1
   end
@@ -469,8 +468,8 @@ function ACPCProtocolToNode:parsed_state_to_node(processed_state)
   node.board = card_to_string:string_to_board(processed_state.board)
   node.current_player = processed_state.acting_player
   node.bets = arguments.Tensor{processed_state.bet1, processed_state.bet2}
-  if (node.bets[1] == arguments.sb and node.bets[2] == arguments.bb) or
-     (node.bets[1] == arguments.bb and node.bets[2] == arguments.sb) then
+  if(node.bets[1] == arguments.sb and node.bets[2] == arguments.bb) or
+    (node.bets[1] == arguments.bb and node.bets[2] == arguments.sb) then
     node.num_bets = 1
   else
     node.num_bets = 0
@@ -515,7 +514,7 @@ function ACPCProtocolToNode:action_to_message(last_message, adviced_action)
 
   local protocol_action = self:_bet_to_protocol_action(adviced_action)
 
-  out = out  .. ":" .. protocol_action
+  out = out .. ":" .. protocol_action
 
   return out
 end
