@@ -20,18 +20,33 @@ require 'Nn.bucket_conversion'
 
 -- Lua implementation of PHP scandir function
 function scandir(directory)
-    local i, t, popen = 0, {}, io.popen
-    local pfile = popen('ls -a "'..directory..'"')
-    for filename in pfile:lines() do
-        i = i + 1
-        t[filename] = 1
-    end
-    pfile:close()
-    return t
+  local i, t, popen = 0, {}, io.popen
+  local pfile = popen('ls -a "' .. directory .. '"')
+  for filename in pfile:lines() do
+    i = i + 1
+    t[filename] = 1
+  end
+  pfile:close()
+  return t
 end
 
-function convert(street, srcfolder, destfolder)
-  --loadind valid data
+function convert(street)
+
+  local srcfolder = "srcfolder"
+  local destfolder = "destfolder"
+
+  if street == 4 then
+    srcfolder = srcfolder .. "river_raw/"
+    destfolder = destfolder .. "river/"
+  elseif street == 3 then
+    srcfolder = srcfolder .. "turn_raw/"
+    destfolder = destfolder .. "turn/"
+  elseif street == 2 then
+    srcfolder = srcfolder .. "flop_raw/"
+    destfolder = destfolder .. "flop/"
+  end
+
+  --loading valid data
   local path = arguments.data_path
   if game_settings.nl then
     path = path .. "NoLimit/"
@@ -61,13 +76,6 @@ function convert(street, srcfolder, destfolder)
   -- ranges, termvalues, potsize
   local input_size = bucket_count * constants.players_count + 1
 
-  local num_train = math.floor(numfiles * 0.9)
-  local num_valid = numfiles - num_train
-
-  local train_count = num_train * arguments.gen_batch_size
-  local valid_count = num_valid * arguments.gen_batch_size
-
-  local idx = 1
   local fileidx = 1
   local file_pattern = "[-](......"
   if street == 1 then
@@ -99,30 +107,14 @@ function convert(street, srcfolder, destfolder)
 
     --input_batch
 
-    idx = idx + arguments.gen_batch_size
-    if fileidx == num_train then
-      idx = 1
-    end
     fileidx = fileidx + 1
     if fileidx % 100 == 0 then
-      print(fileidx)
+      print(fileidx .. "/" .. numfiles)
     end
 
     local raw_indexes = {{1, game_settings.hand_count}, {game_settings.hand_count + 1, game_settings.hand_count * 2}}
     local bucket_indexes = {{1, bucket_count}, {bucket_count + 1, bucket_count * 2}}
 
-    --[[
-    print(string.match(filebase, file_pattern))
-    for card1 = 1,game_settings.card_count do
-      for card2 = card1+1,game_settings.card_count do
-        local idx = card_tools:get_hole_index({card1,card2})
-        print(card_to_string:card_to_string(card1) .. card_to_string:card_to_string(card2)
-              .. ": " .. term_values1[{1,idx}])
-      end
-    end
-
-    io.read()
-]]
     for player = 1, constants.players_count do
       local player_index = raw_indexes[player]
       local bucket_index = bucket_indexes[player]
@@ -151,4 +143,4 @@ function convert(street, srcfolder, destfolder)
   end
 end
 
-convert(tonumber(arg[1]), "srcfolder/", "destfolder/")
+convert(tonumber(arg[1]))

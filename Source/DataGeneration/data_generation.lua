@@ -50,6 +50,22 @@ function M:generate_data_file(data_count, file_name, street)
   local te = TerminalEquity()
   local startTime = torch.Timer()
   
+  local train_folder = "xxx/"
+  
+  if game_settings.nl then
+    train_folder = "NoLimit/"
+  else
+    train_folder = "Limit/"
+  end
+
+  if street == 4 then
+    train_folder = train_folder .. "river_raw/"
+  elseif street == 3 then
+    train_folder = train_folder .. "turn_raw/"
+  elseif street == 2 then
+    train_folder = train_folder .. "flop_raw/"
+  end
+
   startTime:reset()
   for batch = 1, batch_count do
     local timer = torch.Timer()
@@ -61,7 +77,6 @@ function M:generate_data_file(data_count, file_name, street)
     te:set_board(board)
     range_generator:set_board(te, board)
 
-    --print('terminal time: ' .. timer:time().real)
     --generating ranges
     local ranges = arguments.Tensor(constants.players_count, batch_size, game_settings.hand_count)
     for player = 1, constants.players_count do
@@ -113,7 +128,7 @@ function M:generate_data_file(data_count, file_name, street)
       local player_index = player_indexes[player]
       inputs[{{}, player_index}]:copy(ranges[player])
     end
-    --computaton of values using re-solving
+    --computation of values using re-solving
     local values = arguments.Tensor(batch_size, constants.players_count, game_settings.hand_count)
 
 
@@ -144,12 +159,6 @@ function M:generate_data_file(data_count, file_name, street)
     end
 
     local basename = file_name .. '-' .. board_string .. '-' .. batch
-    local train_folder = "xxx/"
-    if game_settings.nl then
-      train_folder = "NoLimit/"
-    else
-      train_folder = "Limit/"
-    end
 
     torch.save(arguments.data_path .. train_folder .. basename .. '.inputs', inputs:float())
     torch.save(arguments.data_path .. train_folder .. basename .. '.targets', targets:float())

@@ -38,5 +38,4 @@ local function convert_cpu_to_gpu(cpu_model_path)
   torch.save(cpu_model_path .. '_gpu.model', model)
 end
 
-
 convert_cpu_to_gpu('../Data/Models/NoLimit/flop/final')

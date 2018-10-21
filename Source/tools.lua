@@ -6,7 +6,7 @@ local M = {C = {}, max_choose = 55}
 --@param table the table
 --@return the string
 function M:table_to_string(table)
-  local out = "{"
+  local out = ''
   for key,value in pairs(table) do
 
     local val_string = ''
@@ -20,8 +20,7 @@ function M:table_to_string(table)
     out = out .. tostring(key) .. ":" .. val_string .. ", "
   end
 
-  out = out .. "}"
-  return out
+  return "{" .. out .. "}"
 end
 
 --- An arbitrarily large number used for clamping regrets.

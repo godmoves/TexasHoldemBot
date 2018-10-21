@@ -98,9 +98,9 @@ while 1 do
     else
       client:send(msg)
     end
-  
+
   else
     client:send("ERR")
   end
-  
+
 end

@@ -179,7 +179,7 @@ end
 -- have a strategy saved in the `strategy` field.
 -- @param[opt] starting_ranges probability vectors over player private hands
 -- at the root node (default uniform)
-function TreeValues:compute_values( root, starting_ranges )
+function TreeValues:compute_values(root, starting_ranges)
 
   --1.0 set the starting range
   local uniform_ranges = arguments.Tensor(constants.players_count, game_settings.card_count):fill(1.0/game_settings.card_count)

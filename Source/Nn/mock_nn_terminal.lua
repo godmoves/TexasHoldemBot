@@ -1,6 +1,5 @@
 --- Implements the same interface as @{value_nn}, but without uses terminal
 -- equity evaluation instead of a neural net.
--- 
 -- Can be used to replace the neural net during debugging.
 -- @classmod mock_nn_terminal
 
@@ -23,13 +22,13 @@ function MockNnTerminal:__init()
   local boards = card_tools:get_second_round_boards()
   self.board_count = boards:size(1)
   self.terminal_equity = TerminalEquity()
-  for i = 1, self.board_count do 
+  for i = 1, self.board_count do
     local board = boards[i]
     self.terminal_equity:set_board(board)
     local call_matrix = self.terminal_equity:get_call_matrix()
     local buckets = self.bucketer:compute_buckets(board)
-    for c1 = 1, game_settings.card_count do 
-      for c2 = 1, game_settings.card_count do 
+    for c1 = 1, game_settings.card_count do
+      for c2 = 1, game_settings.card_count do
         local b1 = buckets[c1]
         local b2 = buckets[c2]
         if( b1 > 0 and b2 > 0 ) then
@@ -48,12 +47,12 @@ end
 -- counterfactual values for each player.
 function MockNnTerminal:get_value(inputs, outputs)
 
-  assert(outputs:dim() == 2 )
+  assert(outputs:dim() == 2)
   local bucket_count = outputs:size(2) / 2
   local batch_size = outputs:size(1)
   local player_indexes = {{1, self.bucket_count}, {self.bucket_count + 1, 2 * self.bucket_count}}
   local players_count = 2
-  for player =1, players_count do 
+  for player = 1, players_count do
     local player_idx = player_indexes[player]
     local opponent_idx = player_indexes[3- player]
     outputs[{{}, player_idx}]:mm(inputs[{{}, opponent_idx}], self.equity_matrix)
