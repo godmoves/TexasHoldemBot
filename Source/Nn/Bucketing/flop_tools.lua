@@ -20,7 +20,7 @@ function M:_suitcat_flop(s1,s2,s3,s4,s5)
 			ret = 35 + s4 * 4 + s5
 		end
 	end
-	return ret;
+	return ret
 end
 
 function M:flopID(h, b)
@@ -85,7 +85,7 @@ function M:flopID(h, b)
 		print("error suit cat")
     io.read()
 	end
-	cat = cat*13*13*13*13*13 + base;
+	cat = cat*13*13*13*13*13 + base
 	return cat
 end
 

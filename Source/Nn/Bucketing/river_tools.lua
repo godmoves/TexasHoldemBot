@@ -8,18 +8,18 @@ function M:_suitcat_river(s1,s2,s3,s4,s5,s6,s7)
   suit[1] = 0
   suit[2] = 0
   suit[3] = 0
-	suit[s3] = suit[s3] + 1;
-	suit[s4] = suit[s4] + 1;
-	suit[s5] = suit[s5] + 1;
-	suit[s6] = suit[s6] + 1;
-	suit[s7] = suit[s7] + 1;
+	suit[s3] = suit[s3] + 1
+	suit[s4] = suit[s4] + 1
+	suit[s5] = suit[s5] + 1
+	suit[s6] = suit[s6] + 1
+	suit[s7] = suit[s7] + 1
 
 	if suit[0]<=2 and suit[1]<=2 and suit[2]<=2 and suit[3]<=2 then
 		return 0
 	end
 
 	if suit[0]==3 or suit[1]==3 or suit[2]==3 or suit[3]==3 then
-		local thesuit = -1;
+		local thesuit = -1
 		for i=0,3 do
 			if suit[i]==3 then
 				thesuit = i
@@ -64,7 +64,7 @@ function M:_suitcat_river(s1,s2,s3,s4,s5,s6,s7)
 	end
 
 	if suit[0]==4 or suit[1]==4 or suit[2]==4 or suit[3]==4 then
-		local thesuit = -1;
+		local thesuit = -1
     for i=0,3 do
 			if suit[i]==4 then
 				thesuit = i
@@ -95,14 +95,14 @@ function M:_suitcat_river(s1,s2,s3,s4,s5,s6,s7)
 			if s1==thesuit and s2==thesuit then return 58 end
 			if s1==thesuit then return 59 end
 			if s2==thesuit then return 60 end
-			return 61;
+			return 61
 		end
 
 		print("bad river suits")
 		io.read()
 	end
 	if suit[0]==5 or suit[1]==5 or suit[2]==5 or suit[3]==5 then
-    local thesuit = -1;
+    local thesuit = -1
     for i=0,3 do
 			if suit[i]==5 then
 				thesuit = i
@@ -130,7 +130,7 @@ function M:riverID(h, b)
 				 math.floor((board[2]-1)/4)*13*13*13 +
          math.floor((board[3]-1)/4)*13*13 +
          math.floor((board[4]-1)/4)*13 +
-         math.floor((board[5]-1)/4);
+         math.floor((board[5]-1)/4)
 
 	local suitcode = self:_suitcat_river(
     hole[1]%4,
@@ -139,13 +139,13 @@ function M:riverID(h, b)
     board[2]%4,
     board[3]%4,
     board[4]%4,
-    board[5]%4);
-	if suitcode==-1 then
+    board[5]%4)
+	if (suitcode == -1) then
 		print("error suit cat")
     io.read()
 	end
 	suitcode = suitcode * 815730722
-	return suitcode+base
+	return suitcode + base
 end
 
 return M

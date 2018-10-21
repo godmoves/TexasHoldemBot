@@ -17,7 +17,7 @@ local M = {}
 -- @return `true` if the tensor contains valid cards and no card is repeated
 function M:hand_is_possible(hand)
   assert(hand:min() > 0 and hand:max() <= game_settings.card_count, 'Illegal cards in hand')
-  local used_cards = torch.FloatTensor(game_settings.card_count):fill(0);
+  local used_cards = torch.FloatTensor(game_settings.card_count):fill(0)
   for i = 1, hand:size(1) do
     used_cards[hand[i]] = used_cards[hand[i]] + 1
   end

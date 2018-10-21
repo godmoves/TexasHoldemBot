@@ -157,15 +157,15 @@ function M:get_rank_count()
   return tools:choose(14, 2) + tools:choose(10, 2)
 end
 
-function M:emd(a,b)
+function M:emd(a, b)
   local emds = {}
-  emds[0] = 0;
+  emds[0] = 0
   for i = 1, 51 do
-    emds[i] = a[i-1] + emds[i-1] - b[i-1];
+    emds[i] = a[i-1] + emds[i-1] - b[i-1]
   end
-  local ret = 0;
+  local ret = 0
   for i = 0, 51 do
-    ret = ret + math.abs(emds[i]);
+    ret = ret + math.abs(emds[i])
   end
   return ret
 end
@@ -179,7 +179,7 @@ function M:_compute_turn_buckets(board)
     hand[i + 2] = board[i]
   end
 
-  for card1 = 1,game_settings.card_count do
+  for card1 = 1, game_settings.card_count do
     if used[card1] == 0 then
       used[card1] = 1
       hand[1] = card1

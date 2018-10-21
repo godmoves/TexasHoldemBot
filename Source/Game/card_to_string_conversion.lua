@@ -6,7 +6,7 @@ require "torch"
 local arguments = require 'Settings.arguments'
 local game_settings =  require 'Settings.game_settings'
 
-local M = {};
+local M = {}
 
 ---All possible card suits - only the first 2 are used in Leduc Hold'em.
 M.suit_table = {'c', 'd', 'h', 's'}
@@ -27,7 +27,7 @@ end
 -- @return the index of the rank
 function M:card_to_rank(card)
   return torch.floor((card - 1) / game_settings.suit_count ) + 1
-end;
+end
 
 --- Holds the string representation for every possible card, indexed by its
 -- numeric representation.
@@ -44,7 +44,6 @@ M.string_to_card_table = {}
 for card = 1, game_settings.card_count do
   M.string_to_card_table[M.card_to_string_table[card]] = card
 end
-
 
 --- Converts a card's numeric representation to its string representation.
 -- @param card the numeric representation of a card
@@ -75,7 +74,7 @@ end
 -- @return the numeric representation of the card
 function M:string_to_card(card_string)
   local card = M.string_to_card_table[card_string]
-  assert(card > 0 and card <= game_settings.card_count )
+  assert(card > 0 and card <= game_settings.card_count)
   return card
 end
 
