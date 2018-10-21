@@ -106,7 +106,7 @@ function RangeGenerator:generate_range(range)
   local batch_size = range:size(1)
   self.sorted_range:resize(batch_size, self.possible_hands_count)
   self:_generate_sorted_range(self.sorted_range, self.possible_hands_count)
-  --we have to reorder the the range back to undo the sort by strength
+  --we have to reorder the range back to undo the sort by strength
   local index = self.reverse_order:expandAs(self.sorted_range)
   if arguments.gpu then
     index = index:cuda()

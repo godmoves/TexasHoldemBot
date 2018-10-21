@@ -66,6 +66,32 @@ function M:generate_data_file(data_count, file_name, street)
     train_folder = train_folder .. "flop_raw/"
   end
 
+  -- Calculate min, max and range pot
+  local min_pot = {}
+  local max_pot = {}
+
+  if game_settings.nl then
+    min_pot = {100, 200, 400, 2000, 6000}
+    max_pot = {100, 400, 2000, 6000, 18000}
+  else
+    if street == 4 then
+      min_pot = {2, 12, 24}
+      max_pot = {12, 24, 48}
+    elseif street == 3 then
+      min_pot = {2, 8, 16}
+      max_pot = {8, 16, 24}
+    elseif street == 2 then
+      min_pot = {2, 4, 6}
+      max_pot = {4, 6, 10}
+    end
+  end
+
+  local pot_range = {}
+
+  for i = 1, #min_pot do
+    pot_range[i] = max_pot[i] - min_pot[i]
+  end
+
   startTime:reset()
   for batch = 1, batch_count do
     local timer = torch.Timer()
@@ -84,31 +110,6 @@ function M:generate_data_file(data_count, file_name, street)
     end
 
     --generating pot sizes between ante and stack - 0.1
-    local min_pot = {}
-    local max_pot = {}
-
-    if game_settings.nl then
-      min_pot = {100,200,400,2000,6000}
-      max_pot = {100,400,2000,6000,18000}
-    else
-      if street == 4 then
-        min_pot = {2,12,24}
-        max_pot = {12,24,48}
-      elseif street == 3 then
-        min_pot = {2,8,16}
-        max_pot = {8,16,24}
-      elseif street == 2 then
-        min_pot = {2,4,6}
-        max_pot = {4,6,10}
-      end
-    end
-
-    local pot_range = {}
-
-    for i = 1,#min_pot do
-      pot_range[i] = max_pot[i] - min_pot[i]
-    end
-
     local random_pot_cat = torch.rand(1):mul(#min_pot):add(1):floor()[1]
     local random_pot_size = torch.rand(1)[1]
 
@@ -128,9 +129,9 @@ function M:generate_data_file(data_count, file_name, street)
       local player_index = player_indexes[player]
       inputs[{{}, player_index}]:copy(ranges[player])
     end
+
     --computation of values using re-solving
     local values = arguments.Tensor(batch_size, constants.players_count, game_settings.hand_count)
-
 
     local pot_size = random_pot_size
     print(board_string .. ' ' .. batch .. ' ' .. pot_size)
@@ -149,13 +150,13 @@ function M:generate_data_file(data_count, file_name, street)
     local p2_range = ranges[2]
     resolving:resolve_first_node(current_node, p1_range, p2_range)
     local root_values = resolving:get_root_cfv_both_players()
-    root_values:mul(1/pot_size)
+    root_values:mul(1 / pot_size)
 
     values:copy(root_values)
 
     for player = 1, constants.players_count do
       local player_index = player_indexes[player]
-      targets[{{}, player_index}]:copy(values[{{},player,{}}])
+      targets[{{}, player_index}]:copy(values[{{}, player, {}}])
     end
 
     local basename = file_name .. '-' .. board_string .. '-' .. batch

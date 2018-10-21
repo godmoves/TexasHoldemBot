@@ -61,8 +61,9 @@ function BetSizing:get_possible_bets(node)
 
     --take pot size after opponent bet is called
     local pot = opponent_bet * 2
-    local used_bets_count = 0;
-      --try all pot fractions bet and see if we can use them
+    local used_bets_count = 0
+    
+    --try all pot fractions bet and see if we can use them
     for i = 1, #fractions do
       local raise_size = pot * fractions[i]
       if raise_size >= min_raise_size and raise_size < max_raise_size then

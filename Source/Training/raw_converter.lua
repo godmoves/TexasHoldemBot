@@ -36,14 +36,14 @@ function convert(street)
   local destfolder = "destfolder"
 
   if street == 4 then
-    srcfolder = srcfolder .. "river_raw/"
-    destfolder = destfolder .. "river/"
+    srcfolder = "river_raw/"
+    destfolder = "river/"
   elseif street == 3 then
-    srcfolder = srcfolder .. "turn_raw/"
-    destfolder = destfolder .. "turn/"
+    srcfolder = "turn_raw/"
+    destfolder = "turn/"
   elseif street == 2 then
-    srcfolder = srcfolder .. "flop_raw/"
-    destfolder = destfolder .. "flop/"
+    srcfolder = "flop_raw/"
+    destfolder = "flop/"
   end
 
   --loading valid data

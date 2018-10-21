@@ -28,8 +28,10 @@ I've included `TensorMath.lua` files in the torch folder of this repository that
 
 Now, from your torch installation directory, run:
 
-    ./clean.sh
-    TORCH_LUA_VERSION=LUA52 ./install.sh
+```
+$ ./clean.sh
+$ TORCH_LUA_VERSION=LUA52 ./install.sh
+```
 
 and you should be good to go.
 
@@ -41,29 +43,114 @@ This implementation was tested against Slumbot 2017, the only publicly playable 
 
 A comparison of preflop ranges was also done against [DeepStack's hand history](https://www.deepstack.ai/s/DeepStack_vs_IFP_pros.zip), showing similar results.
 
-|    |DeepStack | DeepHoldem|
-|--- |--- | ---|
-|Open fold |![](Data/Images/deepstack_folds.png) | ![](Data/Images/my_folds.png)|
-|Open pot |![](Data/Images/deepstack_pots.png) | ![](Data/Images/my_pots.png)|
-|3bet pot after pot open |![](Data/Images/deepstack_3bets.png) | ![](Data/Images/my_3bets.png)|
+| Action                  | DeepStack                           | DeepHoldem                    |
+| ---                     | ---                                 | ---                           |
+| Open fold               |![](Data/Images/deepstack_folds.png) | ![](Data/Images/my_folds.png) |
+| Open pot                |![](Data/Images/deepstack_pots.png)  | ![](Data/Images/my_pots.png)  |
+| 3bet pot after pot open |![](Data/Images/deepstack_3bets.png) | ![](Data/Images/my_3bets.png) |
 
-Average thinking times on NVIDIA Tesla P100:
+Average thinking speed comparison:
 
-Street | Thinking Speed (s)
---- | ---
-Preflop | 2.69
-Flop | 12.42
-Turn | 7.57
-River | 3.33
+| Street  | DeepStack Thinking Speed (s) | DeepHoldem Thinking Speed (s) |
+| ---     | ---                          | ---                           |
+| Preflop | 0.2                          | 2.69                          |
+| Flop    | 5.9                          | 12.42                         |
+| Turn    | 5.5                          | 7.57                          |
+| River   | 2.1                          | 3.33                          |
+
+DeepHoldem using a NVIDIA Tesla P100.
+DeepStack using a NVIDIA GeForce GTX 1080.
 
 Training details:
 
-||# samples | Validation huber loss|
-| --- | --- | --- |
-|River network|1,000,000| 0.0415|
-|Turn network|1,000,000| 0.045|
-|Flop network|1,000,000| 0.013|
-|Preflop aux network|1,000,000| 0.0017|
+| Network             | # samples | # poker situations | Validation huber loss |
+| ---                 | ---       | ---                | ---                   |
+| River network       | 100,000   | 1,000,000          | 0.0415                |
+| Turn network        | 100,000   | 1,000,000          | 0.045                 |
+| Flop network        | 100,000   | 1,000,000          | 0.013                 |
+| Preflop aux network | 100,000   | 1,000,000          | 0.0017                |
+
+Training data and Validation Huber Loss comparison:
+
+| Network             | DeepStack # ps | DeepStack vhb | DeepHoldem # ps | DeepHoldem vhb |
+| ---                 | ---            | ---           | ---             | ---            |
+| River network       | (no used)      | (no used)     | 1,000,000       | 0.0415         |
+| Turn network        | 10,000,000     | 0.026         | 1,000,000       | 0.045          |
+| Flop network        |  1,000,000     | 0.034         | 1,000,000       | 0.013          |
+| Preflop aux network | 10,000,000     | 0.000055      | 1,000,000       | 0.0017         |
+
+Note that:
+* ps: poker situation
+* vhb: validation huber loss
+
+## Samples Math
+
+A training sample is composed of 2 files:
+ * inputs
+ * targets
+
+By default, each training sample contains 10 poker situations (params.gen_batch_size).
+
+If you want to generate 1,000,000 poker situations to train your network, you will need to configure following parameter (Source/Settings/arguments.lua):
+
+```
+params.train_data_count = 1000000
+```
+
+Just to make sure that you understand it:
+ * You will need to have 200,000 files.
+ * You will need to have 100,000 training samples.
+ * You will need to have 1,000,000 poker situations.
+
+```
+200,000 files = 100,000 training samples = 1,000,000 poker situations
+```
+
+## Training your models
+
+DeepHoldem is not a single neuronal network. DeepHoldem is composed of four networks:
+ * River network
+ * Turn network
+ * Flop network
+ * Preflop aux network
+
+Remember that to generate training data for a network, you will need to have the precedent network trained.
+
+The workflow should be:
+
+```
+River > Turn > Flop > Preflop aux
+```
+
+Preflop aux is already included, so you won't need to train it if you want.
+
+In the future, if you want to train your neuronal network with more poker situations, you will have to generate again preflop, flop and turn samples. This is because turn poker situations depends on river model (and the same for flop because depends on turn model...).
+
+## Abstraction actions
+
+DeepStack uses following actions to generate poker situations:
+ * Fold.
+ * Call/Check.
+ * Bet Half Pot (0.5p).
+ * Bet Pot (1p).
+ * All-in.
+
+DeepHoldem uses following actions:
+ * Fold.
+ * Call/Check.
+ * Bet Pot (1p).
+ * All-in.
+
+You can add more actions in parameter configuration file:
+
+```
+params.bet_sizing = {{1},{1},{1}}
+```
+
+You can't remove following actions:
+ * Fold.
+ * Call/Check.
+ * All-in.
 
 ## Creating your own models
 
@@ -73,16 +160,14 @@ Here's a step by step guide to creating models:
 
 1. `cd Source && th DataGeneration/main_data_generation.lua 4`
 2. Wait for enough data to be generated.
-3. Modify the last line of `Training/raw_converter.lua` to specify the folders where the raw training data (source folder) you got from step 1 is and where you want the bucketed training data (dest folder) to be.
-4. `th Training/raw_converter.lua 4`
-5. `th Training/main_train.lua 4`
-6. Models will be generated under `Data/Models/NoLimit`. Pick the model you like best and place it inside
-   `Data/Models/NoLimit/river` along with its .info file. Rename them to `final_cpu.info` and `final_cpu.model`.
-   Please refer to the [DeepStack-Leduc](https://github.com/lifrordi/DeepStack-Leduc/blob/master/doc/manual/tutorial.md) tutorial if you want to convert them to GPU models.
-7. Repeat steps 1-6 for turn and flop by replacing `4` with `3` or `2` and placing the models under the
-turn and flop folders.
+3. `th Training/raw_converter.lua 4`
+4. `th Training/main_train.lua 4`
+5. Models will be generated under `Data/Models/NoLimit`. Pick the model you like best and place it inside
+   `Data/Models/NoLimit/river` along with its .info file. Rename them to `final_gpu.info` and `final_gpu.model`.
+   Please refer to the [DeepStack-Leduc](https://github.com/lifrordi/DeepStack-Leduc/blob/master/doc/manual/tutorial.md) tutorial if you want to convert them to CPU models.
+6. Repeat steps 1-5 for turn and flop by replacing `4` with `3` or `2` and placing the models under the turn and flop folders.
 
-If you want to speed up data generation with a GPU, make sure to modify `Settings/arguments.lua` so that `params.gpu = true`
+By default, data generation and model training uses GPU, if you want to disable it, just modify `Settings/arguments.lua` to `params.gpu = fals`.
 
 ## Playing against DeepHoldem
 
@@ -116,3 +201,7 @@ skip the flop bucket computation by commenting out line 44 of `Source/Nn/next_ro
 - Speed up flop solving (use flop network during preflop solving?)
 - Support LuaJIT
 - C++ implementation?
+
+## References
+
+DeepStack Paper & Supplements: https://www.deepstack.ai/downloads
