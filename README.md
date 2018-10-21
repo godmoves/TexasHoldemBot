@@ -63,12 +63,12 @@ DeepStack using a NVIDIA GeForce GTX 1080.
 
 Training details:
 
-| Network             | # samples | # poker situations | Validation huber loss |
-| ---                 | ---       | ---                | ---                   |
-| River network       | 100,000   | 1,000,000          | 0.0415                |
-| Turn network        | 100,000   | 1,000,000          | 0.045                 |
-| Flop network        | 100,000   | 1,000,000          | 0.013                 |
-| Preflop aux network | 100,000   | 1,000,000          | 0.0017                |
+| Network             | # samples | # poker situations | Validation huber loss | Epoch |
+| ---                 | ---       | ---                | ---                   | ---   |
+| River network       | 100,000   | 1,000,000          | 0.0415                | 54    |
+| Turn network        | 100,000   | 1,000,000          | 0.045                 | 52    |
+| Flop network        | 100,000   | 1,000,000          | 0.013                 | 52    |
+| Preflop aux network | 100,000   | 1,000,000          | 0.0017                | 67    |
 
 Training data and Validation Huber Loss comparison:
 
@@ -82,6 +82,16 @@ Training data and Validation Huber Loss comparison:
 Note that:
 * ps: poker situation
 * vhb: validation huber loss
+
+If you need to extract Neuronal network information, just type `th` and:
+```
+$ torch.load('final_cpu.info')
+{
+  gpu : false
+  epoch : 54
+  valid_loss : 0.041533345632636
+}
+```
 
 ## Samples Math
 
@@ -167,7 +177,7 @@ Here's a step by step guide to creating models:
    Please refer to the [DeepStack-Leduc](https://github.com/lifrordi/DeepStack-Leduc/blob/master/doc/manual/tutorial.md) tutorial if you want to convert them to CPU models.
 6. Repeat steps 1-5 for turn and flop by replacing `4` with `3` or `2` and placing the models under the turn and flop folders.
 
-By default, data generation and model training uses GPU, if you want to disable it, just modify `Settings/arguments.lua` to `params.gpu = fals`.
+By default, data generation and model training uses GPU, if you want to disable it, just modify `Settings/arguments.lua` to `params.gpu = false`.
 
 ## Playing against DeepHoldem
 
