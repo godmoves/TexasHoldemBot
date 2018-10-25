@@ -57,7 +57,7 @@ function BetSizing:get_possible_bets(node)
     
     --we can always go allin
     local max_possible_bets_count = #fractions + 1
-    local out = arguments.Tensor(max_possible_bets_count,2):fill(opponent_bet)
+    local out = arguments.Tensor(max_possible_bets_count, 2):fill(opponent_bet)
 
     --take pot size after opponent bet is called
     local pot = opponent_bet * 2

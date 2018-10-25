@@ -25,5 +25,5 @@ while true do
   print(status)
 
 
-  collectgarbage();collectgarbage()
+  collectgarbage()
 end

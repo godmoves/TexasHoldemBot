@@ -23,11 +23,6 @@ while true do
   --2.1 blocks until it's our situation/turn
   state, node = acpc_game:get_next_situation()
 
-  --print(state)
-  --io.read()
-  --print(node)
-  --io.read()
-
   print("input action:")
   local action = io.read()
 
@@ -45,5 +40,5 @@ while true do
   --2.3 send the action to the dealer
   acpc_game:play_action(acpc_action)
 
-  collectgarbage();collectgarbage()
+  collectgarbage()
 end

@@ -46,5 +46,5 @@ while true do
   last_state = state
   last_node = node
 
-  collectgarbage();collectgarbage()
+  collectgarbage()
 end

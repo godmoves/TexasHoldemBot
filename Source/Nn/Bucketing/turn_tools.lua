@@ -108,7 +108,7 @@ function M:turnID(h, b)
 		print("error suit cat")
     io.read()
 	end
-	cat = cat*13*13*13*13*13*13 + base;
+	cat = cat*13*13*13*13*13*13 + base
 	return cat
 end
 

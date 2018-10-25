@@ -49,7 +49,7 @@ function loop_evaluation(continual_resolving, client, last_state, last_node)
   end
   last_state = state
   last_node = node
-  collectgarbage();collectgarbage()
+  collectgarbage()
 
   return action, continual_resolving, client, last_state, last_node
 

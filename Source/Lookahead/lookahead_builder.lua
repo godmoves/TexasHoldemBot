@@ -532,6 +532,7 @@ function LookaheadBuilder:_compute_tree_structures(current_layer, current_depth)
     --remove allin
     self.lookahead.nonallinbets_count[current_depth] = self.lookahead.nonallinbets_count[current_depth] - 1
   end
+  
   --if no alllin...
   if layer_actions_count == 2 then
     assert(layer_actions_count == layer_terminal_actions_count, layer_terminal_actions_count .. " " .. current_depth)

@@ -10,14 +10,14 @@ local DataStream = torch.class('DataStream')
 
 -- Lua implementation of PHP scandir function
 function DataStream:_scandir(directory)
-    local i, t, popen = 0, {}, io.popen
-    local pfile = popen('ls -a "'..directory..'"')
-    for filename in pfile:lines() do
-        i = i + 1
-        t[filename] = 1
-    end
-    pfile:close()
-    return t
+  local i, t, popen = 0, {}, io.popen
+  local pfile = popen('ls -a "' .. directory .. '"')
+  for filename in pfile:lines() do
+    i = i + 1
+    t[filename] = 1
+  end
+  pfile:close()
+  return t
 end
 
 --- Constructor.
@@ -51,7 +51,7 @@ function DataStream:__init(street)
   for filename,_ in pairs(filenames) do
     local res = string.find(filename, ".inputs")
     if res ~= nil then
-      local targetname = filename:sub(0,res) .. "targets"
+      local targetname = filename:sub(0, res) .. "targets"
       if filenames[targetname] ~= nil then
         numfiles = numfiles + 1
         goodfiles[numfiles] = filename:sub(0,res)
@@ -225,7 +225,7 @@ end
 -- @return the targets set for the batch
 -- @return the masks set for the batch
 function DataStream:get_train_batch(batch_index)
-    return self:get_batch(batch_index)
+  return self:get_batch(batch_index)
 end
 
 --- Returns a batch of data from the validation set.

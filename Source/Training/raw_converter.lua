@@ -59,7 +59,7 @@ function convert(street)
   for filename,_ in pairs(filenames) do
     local res = string.find(filename, ".inputs")
     if res ~= nil then
-      local targetname = filename:sub(0,res) .. "targets"
+      local targetname = filename:sub(0, res) .. "targets"
       if filenames[targetname] ~= nil then
         goodfiles[filename:sub(0,res)] = 1
         numfiles = numfiles + 1
@@ -130,7 +130,7 @@ function convert(street)
         input_batch[{{}, bucket_index}],
         target_batch[{{}, bucket_index}])
     end
-    input_batch[{{}, -1}]:copy(raw_input_batch[{{},-1}])
+    input_batch[{{}, -1}]:copy(raw_input_batch[{{}, -1}])
 
     if arguments.gpu then
       torch.save(path .. destfolder .. targetname, target_batch:cuda())

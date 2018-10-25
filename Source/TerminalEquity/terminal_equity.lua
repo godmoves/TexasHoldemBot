@@ -72,14 +72,14 @@ function TerminalEquity:get_last_round_call_matrix(board_cards, call_matrix)
     'Only Leduc, extended Leduc, and Texas Holdem are supported ' .. board_cards:size(1))
 
   local strength = evaluator:batch_eval_fast(board_cards)
-  --handling hand stregths (winning probs);
+  --handling hand stregths (winning probs)
   local strength_view_1 = strength:view(game_settings.hand_count, 1):expandAs(call_matrix)
   local strength_view_2 = strength:view(1, game_settings.hand_count):expandAs(call_matrix)
 
   call_matrix:copy(torch.gt(strength_view_1, strength_view_2))
   call_matrix:csub(torch.lt(strength_view_1, strength_view_2):typeAs(call_matrix))
 
-  self:_handle_blocking_cards(call_matrix, board_cards);
+  self:_handle_blocking_cards(call_matrix, board_cards)
 end
 
 --- Constructs the matrix that turns player ranges into showdown equity.
@@ -95,7 +95,7 @@ function TerminalEquity:get_inner_call_matrix(board_cards, call_matrix)
     'Only Leduc, extended Leduc, and Texas Holdem are supported ' .. board_cards:size(2))
   local strength = evaluator:batch_eval_fast(board_cards)
   local num_boards = board_cards:size(1)
-  --handling hand stregths (winning probs);
+  --handling hand stregths (winning probs)
   local strength_view_1 = strength:view(num_boards, game_settings.hand_count, 1):expand(num_boards, game_settings.hand_count, game_settings.hand_count)
   local strength_view_2 = strength:view(num_boards, 1, game_settings.hand_count):expandAs(strength_view_1)
 
@@ -118,7 +118,7 @@ function TerminalEquity:get_inner_call_matrix(board_cards, call_matrix)
     call_matrix:csub(torch.sum(self.matrix_mem[{{1,sz}}],1))
   end
 
-  self:_handle_blocking_cards(call_matrix, board_cards);
+  self:_handle_blocking_cards(call_matrix, board_cards)
 end
 
 --- Zeroes entries in an equity matrix that correspond to invalid hands.
@@ -129,12 +129,12 @@ end
 -- @param board a possibly empty vector of board cards
 -- @local
 function TerminalEquity:_handle_blocking_cards(equity_matrix, board)
-  local possible_hand_indexes = card_tools:get_possible_hand_indexes(board);
-  local possible_hand_matrix = possible_hand_indexes:view(1, game_settings.hand_count):expandAs(equity_matrix);
+  local possible_hand_indexes = card_tools:get_possible_hand_indexes(board)
+  local possible_hand_matrix = possible_hand_indexes:view(1, game_settings.hand_count):expandAs(equity_matrix)
 
-  equity_matrix:cmul(possible_hand_matrix);
-  possible_hand_matrix = possible_hand_indexes:view(game_settings.hand_count,1):expandAs(equity_matrix);
-  equity_matrix:cmul(possible_hand_matrix);
+  equity_matrix:cmul(possible_hand_matrix)
+  possible_hand_matrix = possible_hand_indexes:view(game_settings.hand_count,1):expandAs(equity_matrix)
+  equity_matrix:cmul(possible_hand_matrix)
 
   if game_settings.hand_card_count == 2 then
     equity_matrix:cmul(self._block_matrix)
@@ -154,10 +154,10 @@ end
 -- @local
 
 function TerminalEquity:_set_fold_matrix(board)
-  self.fold_matrix = arguments.Tensor(game_settings.hand_count, game_settings.hand_count);
-  self.fold_matrix:fill(1);
+  self.fold_matrix = arguments.Tensor(game_settings.hand_count, game_settings.hand_count)
+  self.fold_matrix:fill(1)
   --setting cards that block each other to zero
-  self:_handle_blocking_cards(self.fold_matrix, board);
+  self:_handle_blocking_cards(self.fold_matrix, board)
 end
 
 --- Sets the evaluator's call matrix, which gives the equity for terminal
@@ -171,18 +171,18 @@ end
 -- @local
 -- TODO finish this
 function TerminalEquity:_set_call_matrix(board)
-  local street = card_tools:board_to_street(board);
+  local street = card_tools:board_to_street(board)
 
-  self.equity_matrix = arguments.Tensor(game_settings.hand_count, game_settings.hand_count):zero();
+  self.equity_matrix = arguments.Tensor(game_settings.hand_count, game_settings.hand_count):zero()
   if street == constants.streets_count then
     --for last round we just return the matrix
-    self:get_last_round_call_matrix(board, self.equity_matrix);
+    self:get_last_round_call_matrix(board, self.equity_matrix)
   elseif street == 3 or street == 2 then
     --iterate through all possible next round streets
     --TODO(go to the last street)
-    local next_round_boards = card_tools:get_last_round_boards(board);
+    local next_round_boards = card_tools:get_last_round_boards(board)
   --  assert(false, 'hey')
-    local boards_count = next_round_boards:size(1);
+    local boards_count = next_round_boards:size(1)
 
     if self.matrix_mem:dim() ~= 3 or self.matrix_mem:size(2) ~= game_settings.hand_count or self.matrix_mem:size(3) ~= game_settings.hand_count then
       self.matrix_mem = arguments.Tensor(self.batch_size, game_settings.hand_count, game_settings.hand_count)
@@ -196,12 +196,12 @@ function TerminalEquity:_set_call_matrix(board)
 
     local weight_constant = 1/den
 
-    self.equity_matrix:mul(weight_constant);
+    self.equity_matrix:mul(weight_constant)
   elseif street == 1 then
     self.equity_matrix:copy(self._pf_equity)
   else
     --impossible street
-    assert(false, 'impossible street ' .. street);
+    assert(false, 'impossible street ' .. street)
   end
 end
 
@@ -214,8 +214,8 @@ end
 -- @param board a possibly empty vector of board cards
 function TerminalEquity:set_board(board)
   self.board = board
-  self:_set_call_matrix(board);
-  self:_set_fold_matrix(board);
+  self:_set_call_matrix(board)
+  self:_set_fold_matrix(board)
 end
 
 --- Computes (a batch of) counterfactual values that a player achieves at a terminal node
@@ -226,8 +226,8 @@ end
 -- @param ranges a batch of opponent ranges in an NxK tensor, where N is the batch size
 -- and K is the range size
 -- @param result a NxK tensor in which to save the cfvs
-function TerminalEquity:call_value( ranges, result )
-  result:mm(ranges, self.equity_matrix);
+function TerminalEquity:call_value(ranges, result)
+  result:mm(ranges, self.equity_matrix)
 end
 
 --- Computes (a batch of) counterfactual values that a player achieves at a terminal node
@@ -239,8 +239,8 @@ end
 -- and K is the range size
 -- @param result A NxK tensor in which to save the cfvs. Positive cfvs are returned, and
 -- must be negated if the player in question folded.
-function TerminalEquity:fold_value( ranges, result )
-  result:mm(ranges, self.fold_matrix);
+function TerminalEquity:fold_value(ranges, result)
+  result:mm(ranges, self.fold_matrix)
 end
 
 --- Returns the matrix which gives showdown equity for any ranges.
@@ -286,4 +286,3 @@ function TerminalEquity:tree_node_fold_value( ranges, result, folding_player )
 end
 
 TerminalEquity:__init()
---TerminalEquity:set_board(torch.Tensor({48,52,44, 1}))
