@@ -102,7 +102,7 @@ function M:train(network, data_stream, epoch_count)
     local loss_min = 10000000.0
     local loss_max = 0
 
-    if epoch == 50 then
+    if epoch == arguments.decrease_learning_at_epoch then
       state.learningRate = state.learningRate / 10
     end
     

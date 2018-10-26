@@ -33,7 +33,7 @@ params.cfr_skip_iters = 500
 --- how many poker situations are solved simultaneously during data generation
 params.gen_batch_size = 10
 --- how many poker situations are used in each neural net training batch
-params.train_batch_size = 10000
+params.train_batch_size = 1000
 --- path to the solved poker situation data used to train the neural net
 params.data_path = '../Data/TrainSamples/'
 --- path to the neural net model
@@ -45,11 +45,13 @@ params.net = '{nn.Linear(input_size, 500), nn.BatchNormalization(500), nn.PReLU(
 --- how often to save the model during training
 params.save_epoch = 1
 --- how many epochs to train for
-params.epoch_count = 1000
+params.epoch_count = 500
 --- how many solved poker situations are generated for use as training examples
-params.train_data_count = 150000
+params.train_data_count = 1500000
 --- learning rate for neural net training
 params.learning_rate = 0.001
+--- how epochs are needed to decrease learning_rate to learning_rate / 10
+params.decrease_learning_at_epoch = 200
 
 assert(params.cfr_iters > params.cfr_skip_iters)
 if params.gpu then

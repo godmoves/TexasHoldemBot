@@ -55,7 +55,7 @@ function ACPCProtocolToNode:_parse_actions(actions)
       table.insert(out, {action = constants.acpc_actions.fold})
       parsed_chunk = "f"
     else
-      assert(false)
+      assert(false, "Error parsing actions. Not processed action == " .. actions_remainder)
     end
 
     assert(#parsed_chunk > 0)
