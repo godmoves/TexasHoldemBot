@@ -17,7 +17,7 @@ local TreeCFR = torch.class('TreeCFR')
 --- Constructor
 function TreeCFR:__init()
   --for ease of implementation, we use small epsilon rather than zero when working with regrets
-  self.regret_epsilon = 1/1000000000
+  self.regret_epsilon = 1 / 1000000000
   self._cached_terminal_equities = {}
 end
 
@@ -93,7 +93,7 @@ function TreeCFR:cfrs_iter_dfs( node, iter )
       current_strategy:cdiv(regrets_sum:expandAs(current_strategy))
     end
 
-	--current cfv [[actions, players, ranges]]
+    --current cfv [[actions, players, ranges]]
     local cf_values_allactions = arguments.Tensor(actions_count, constants.players_count, game_settings.hand_count):fill(0)
 
     local children_ranges_absolute = {}
@@ -173,7 +173,8 @@ function TreeCFR:update_average_strategy(node, current_strategy, iter)
     local iter_weight = torch.cdiv(iter_weight_contribution, node.iter_weight_sum)
 
     local expanded_weight = iter_weight:view(1, game_settings.hand_count):expandAs(node.strategy)
-    local old_strategy_scale = expanded_weight * (-1) + 1 --same as 1 - expanded weight
+    --same as 1 - expanded weight
+    local old_strategy_scale = expanded_weight * (-1) + 1
     node.strategy:cmul(old_strategy_scale)
     local strategy_addition = current_strategy:cmul(expanded_weight)
     node.strategy:add(strategy_addition)
@@ -186,14 +187,14 @@ end
 -- at the root node (default uniform)
 -- @param[opt] iter_count the number of iterations to run CFR for
 -- (default @{arguments.cfr_iters})
-function TreeCFR:run_cfr( root, starting_ranges, iter_count )
+function TreeCFR:run_cfr(root, starting_ranges, iter_count)
 
   assert(starting_ranges)
   local iter_count = iter_count or arguments.cfr_iters
 
   root.ranges_absolute =  starting_ranges
 
-  for iter = 1,iter_count do
+  for iter = 1, iter_count do
     self:cfrs_iter_dfs(root, iter)
   end
 end

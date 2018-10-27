@@ -18,12 +18,12 @@ local M = {}
 -- @param epoch the current epoch number
 -- @param valid_loss the validation loss of the current network
 -- @local
-function  M:_save_model(model, epoch, valid_loss, learningRate)
+function M:_save_model(model, epoch, valid_loss, learning_rate)
 
   local model_information = {}
   model_information.epoch = epoch
   model_information.valid_loss = valid_loss
-  model_information.learningRate = learningRate
+  model_information.learning_rate = learning_rate
   model_information.gpu = arguments.gpu
 
   local path = arguments.model_path
@@ -116,7 +116,7 @@ function M:train(network, data_stream, epoch_count)
       loss_max = math.max(loss_max, loss[1])
     end
 
-    print(string.format("Training loss  : %f  min: %f  max: %f  learningRate: %f", lossSum / data_stream.train_batch_count, loss_min, loss_max, state.learningRate))
+    print(string.format('Training loss  : %f  min: %f  max: %f  learningRate: %f', lossSum / data_stream.train_batch_count, loss_min, loss_max, state.learningRate))
 
     M.network:evaluate(true)
     --check validation loss
@@ -144,17 +144,15 @@ function M:train(network, data_stream, epoch_count)
       M.epoch_num_min_validation_loss = epoch
     end
 
-    print(string.format("Validation loss: %f  min: %f  max: %f", valid_loss, valid_loss_min, valid_loss_max))
-    print(string.format("Validation progress: %f     Last minimum found: %d epoch back", progress, epoch - M.epoch_num_min_validation_loss))
+    print(string.format('Validation loss: %f  min: %f  max: %f', valid_loss, valid_loss_min, valid_loss_max))
+    print(string.format('Validation progress: %f     Last minimum found: %d epoch back', progress, epoch - M.epoch_num_min_validation_loss))
     next_time = os.date('*t', os.time() + math.floor(timer:time().real))
-    print(string.format('Epoch took: %f  Timestamp: %s +2h   next time: %02d:%02d', timer:time().real, os.date("%H:%M"), next_time.hour, next_time.min))
+    print(string.format('Epoch took (s): %f  Timestamp: %s +2h   next time: %02d:%02d', timer:time().real, os.date("%H:%M"), next_time.hour, next_time.min))
 
     --saving the model
-    print(epoch .. ' / ' .. epoch_count)
+    print(string.format('Epoch / Total: %d / %d', epoch, epoch_count))
     if (epoch % arguments.save_epoch == 0) then
-      print("SAVING MODEL")
       self:_save_model(network, epoch, valid_loss, state.learningRate)
-      print("SAVED")
     end
   end
   --end of train loop

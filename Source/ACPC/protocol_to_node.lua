@@ -109,7 +109,7 @@ function ACPCProtocolToNode:_parse_state(state)
   local flop_actions
   local turn_actions
   local river_actions
-    _, _, preflop_actions, flop_actions, turn_actions, river_actions = string.find(actions, "([^/]*)/?([^/]*)/?([^/]*)/?([^/]*)")
+  _, _, preflop_actions, flop_actions, turn_actions, river_actions = string.find(actions, "([^/]*)/?([^/]*)/?([^/]*)/?([^/]*)")
 
   --print('preflop_actions: ', preflop_actions)
   --print('flop_actions: ', flop_actions)
@@ -123,10 +123,10 @@ function ACPCProtocolToNode:_parse_state(state)
   local turn = ""
   local river = ""
 
-   _, _, hand_p1, hand_p2, flop, turn, river = string.find(cards, "([^|]*)|([^/]*)/?([^/]*)/?([^/]*)/?([^/]*)")
+  _, _, hand_p1, hand_p2, flop, turn, river = string.find(cards, "([^|]*)|([^/]*)/?([^/]*)/?([^/]*)/?([^/]*)")
   --print('hand_p1: ', hand_p1)
- -- print('hand_p2: ', hand_p2)
- -- print('flop: ', flop)
+  --print('hand_p2: ', hand_p2)
+  --print('flop: ', flop)
   --print('turn: ', turn)
   --print('river: ', river)
 
