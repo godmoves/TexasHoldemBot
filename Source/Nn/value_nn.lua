@@ -10,7 +10,9 @@ local ValueNn = torch.class('ValueNn')
 
 --- Constructor. Loads the neural net from disk.
 function ValueNn:__init(street, aux)
+
   local net_file = arguments.model_path
+  
   if game_settings.nl then
     net_file = net_file .. "NoLimit/"
   else

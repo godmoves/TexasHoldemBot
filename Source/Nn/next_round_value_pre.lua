@@ -29,7 +29,7 @@ end
 function NextRoundValuePre:_init_bucketing(board)
   local street = card_tools:board_to_street(board)
   self._street = street
-  self.bucket_count = bucketer:get_bucket_count(street+1)
+  self.bucket_count = bucketer:get_bucket_count(street + 1)
   local boards = card_tools:get_next_round_boards(board)
   self.boards = boards
 
@@ -38,7 +38,7 @@ function NextRoundValuePre:_init_bucketing(board)
 
   for idx = 1, self.board_count do
     if idx % 100 == 0 then
-      print(idx)
+      print(string.format('Bucket / Total: %d / %d', idx, self.board_count))
     end
     local board = self.boards[idx]
     self.board_buckets[{idx,{}}]:copy(bucketer:compute_buckets(board))

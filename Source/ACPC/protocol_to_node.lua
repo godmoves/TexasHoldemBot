@@ -246,18 +246,12 @@ function ACPCProtocolToNode:_process_parsed_state(parsed_state)
     current_street = string.len(parsed_state.board) / 2 - 1
   end
 
-  --print('current_street: ', current_street)
-
-
   --2.0 convert actions to player actions
   local all_actions
   all_actions = self:_convert_actions(parsed_state.actions)
 
-  --print('all_actions: ', tools:table_to_string(all_actions))
-
   --3.0 current board
   local board = parsed_state.board
-  --print('board: ', board)
 
   --in protocol 0=SB 1=BB, need to convert to our representation
   out.position = parsed_state.position + 1
@@ -277,14 +271,13 @@ function ACPCProtocolToNode:_process_parsed_state(parsed_state)
   out.hand_id = card_tools:string_to_hole_index(out.hand_string)
 
   local acting_player = self:_get_acting_player(out)
-  --print('acting_player: ', acting_player)
   out.acting_player = acting_player
 
   --5.0 compute bets
   local bet1
   local bet2
   bet1, bet2 = self:_compute_bets(out)
-  --assert(bet1 <= bet2)
+  assert(bet1 <= bet2, 'ACPC Protocol Specification defines that always bets should be more or equal than last bets (bet1=' .. bet1 .. ') (bet2=' .. bet2 .. ')')
 
   if out.position == constants.players.P1 then
     out.bet1 = bet1
@@ -364,9 +357,6 @@ function ACPCProtocolToNode:_compute_bets(processed_state)
 
   assert(bet1)
   assert(bet2)
-
-  --print("bet1 :", bet1)
-  --print("bet2 :", bet2)
 
   return bet1, bet2
 end
@@ -510,11 +500,6 @@ end
 -- @return a string messsage in ACPC format to send to the server
 function ACPCProtocolToNode:action_to_message(last_message, adviced_action)
 
-  local out = last_message
-
-  local protocol_action = self:_bet_to_protocol_action(adviced_action)
-
-  out = out .. ":" .. protocol_action
-
-  return out
+  return last_message .. ":" .. self:_bet_to_protocol_action(adviced_action)
+  
 end

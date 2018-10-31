@@ -96,11 +96,11 @@ function M:get_file_range(filename)
     if s == nil then
       break
     end
-    s = s:gsub("t","T")
-    s = s:gsub("j","J")
-    s = s:gsub("q","Q")
-    s = s:gsub("k","K")
-    s = s:gsub("a","A")
+    s = s:gsub("t", "T")
+    s = s:gsub("j", "J")
+    s = s:gsub("q", "Q")
+    s = s:gsub("k", "K")
+    s = s:gsub("a", "A")
     local n = f:read("*number")
     if n == nil then
       break

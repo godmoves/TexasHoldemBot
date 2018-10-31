@@ -215,7 +215,7 @@ function M:_compute_flop_buckets(board)
     hand[i + 2] = board[i]
   end
 
-  for card1 = 1,game_settings.card_count do
+  for card1 = 1, game_settings.card_count do
     if used[card1] == 0 then
       used[card1] = 1
       hand[1] = card1
@@ -274,7 +274,7 @@ function M:_compute_river_buckets(board)
     hands[{i,{1, - 1 - game_settings.hand_card_count}}]:copy(board)
   end
 
-  for card1 = 1,game_settings.card_count do
+  for card1 = 1, game_settings.card_count do
     if used[card1] == 0 then
       used[card1] = 1
       hands[1][-2] = card1

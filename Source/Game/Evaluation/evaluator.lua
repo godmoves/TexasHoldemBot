@@ -29,7 +29,7 @@ function M:_init()
   end
   if self._texas_lookup == nil then
 
-    local file_found=io.open("./Game/Evaluation/HandRanksTensor.dat", "r")
+    local file_found = io.open("./Game/Evaluation/HandRanksTensor.dat", "r")
     if file_found ~= nill then
       io.close(file_found)
       self._texas_lookup = torch.load("./Game/Evaluation/HandRanksTensor.dat")
