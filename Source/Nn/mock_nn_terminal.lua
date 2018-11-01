@@ -6,7 +6,7 @@
 require 'torch'
 require 'Nn.bucketer'
 require 'TerminalEquity.terminal_equity'
-local game_settings = require  'Settings.game_settings'
+local game_settings = require 'Settings.game_settings'
 local card_tools = require 'Game.card_tools'
 local arguments = require 'Settings.arguments'
 

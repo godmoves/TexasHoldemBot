@@ -2,4 +2,5 @@
 **/.DS_Store
 *.targets
 *.inputs
+*.pyc
 Source/Game/Evaluation/HandRanks.dat

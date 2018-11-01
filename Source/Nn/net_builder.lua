@@ -15,7 +15,7 @@ local M = {}
 print "Loading Net Builder"
 local bucketer = require 'Nn.bucketer'
 local river_tools = require 'Nn.Bucketing.river_tools'
-require "nn"
+require 'nn'
 require 'torch'
 require 'math'
 

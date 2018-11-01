@@ -4,6 +4,7 @@
 require 'Lookahead.lookahead_builder'
 require 'TerminalEquity.terminal_equity'
 require 'Lookahead.cfrd_gadget'
+
 local arguments = require 'Settings.arguments'
 local constants = require 'Settings.constants'
 local game_settings = require 'Settings.game_settings'
@@ -13,6 +14,7 @@ local card_to_string = require 'Game.card_to_string_conversion'
 
 local Lookahead = torch.class('Lookahead')
 local timings = {}
+
 --- Constructor
 function Lookahead:__init(terminal_equity, batch_size)
   self.builder = LookaheadBuilder(self)
@@ -71,10 +73,10 @@ end
 function Lookahead:_compute()
   --1.0 main loop
 
-  for i=1,8 do
+  for i = 1, 8 do
     timings[i] = 0
   end
-  for iter=1,arguments.cfr_iters do
+  for iter = 1, arguments.cfr_iters do
 
     local timer = torch.Timer()
     timer:reset()
@@ -113,7 +115,7 @@ end
 --- Uses regret matching to generate the players' current strategies.
 -- @local
 function Lookahead:_compute_current_strategies()
-  for d=2,self.depth do
+  for d = 2, self.depth do
     self.positive_regrets_data[d]:copy(self.regrets_data[d])
     self.positive_regrets_data[d]:clamp(self.regret_epsilon, tools:max_number())
 
@@ -136,7 +138,7 @@ end
 -- @local
 function Lookahead:_compute_ranges()
 
-  for d=1,self.depth-1 do
+  for d = 1, self.depth - 1 do
     local current_level_ranges = self.ranges_data[d]
     local next_level_ranges = self.ranges_data[d+1]
 
@@ -180,7 +182,7 @@ end
 function Lookahead:_compute_terminal_equities_terminal_equity()
 
   -- copy in range data
-  for d=2,self.depth do
+  for d = 2, self.depth do
     if d > 2 or self.first_call_terminal then
       if self.tree.street ~= constants.streets_count then
         self.ranges_data_call[{self.term_call_indices[d]}]:copy(self.ranges_data[d][2][-1])

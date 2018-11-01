@@ -9,7 +9,8 @@ local arguments = require 'Settings.arguments'
 local constants = require "Settings.constants"
 
 --if you want to fake what messages the acpc dealer sends, put them in the following list and uncomment it.
-local debug_msg = nil--{"MATCHSTATE:0:99::Kh|/", "MATCHSTATE:0:99:cr200:Kh |/", "MATCHSTATE:0:99:cr200:Kh|/Ks"}
+--{"MATCHSTATE:0:99::Kh|/", "MATCHSTATE:0:99:cr200:Kh |/", "MATCHSTATE:0:99:cr200:Kh|/Ks"}
+local debug_msg = nil
 
 local ACPCGame = torch.class('ACPCGame')
 

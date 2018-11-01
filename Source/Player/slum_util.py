@@ -8,8 +8,8 @@ def acpcify_board(board):
   return "WTF"
 
 def acpcify_actions(actions):
-  actions = actions.replace("b","r")
-  actions = actions.replace("k","c")
+  actions = actions.replace("b", "r")
+  actions = actions.replace("k", "c")
   streets = actions.split("/")
   max_bet = 0
   for i, street_actions in enumerate(streets):

@@ -55,7 +55,7 @@ function M:get_possible_hand_indexes(board)
 
   for card1 = 1, game_settings.card_count do
     if not used[card1] then
-      for card2 = card1+1, game_settings.card_count do
+      for card2 = card1 + 1, game_settings.card_count do
         if not used[card2] then
           out[M:get_hole_index({card1,card2})] = 1
         end

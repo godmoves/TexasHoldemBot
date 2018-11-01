@@ -96,11 +96,11 @@ while 1 do
       client = server:accept()
       print("accepted client")
     else
-      client:send(msg)
+      client:send(msg .. "\n")
     end
 
   else
-    client:send("ERR")
+    client:send("ERR" .. "\n")
   end
 
 end

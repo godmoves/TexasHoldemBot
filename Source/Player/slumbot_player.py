@@ -4,6 +4,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+
 import os
 import sys
 import time
@@ -13,6 +14,7 @@ import socket
 if len(sys.argv) < 3:
   print("missing address port")
   sys.exit()
+
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client_socket.connect((sys.argv[1], int(sys.argv[2])))
 

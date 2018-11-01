@@ -194,15 +194,34 @@ skip the flop bucket computation by commenting out line 44 of `Source/Nn/next_ro
 6. Once the deepstack player is done loading, you can play against it using manual_player terminal. `f` = fold,
 `c` = check/call, `450` = raise my total pot commitment to 450 chips.
 
+## Playing vs Slum Bot
+
+Slum bot is available to play online in this page: http://www.slumbot.com/
+
+There is a script in Python that you can use to play versus Slum Bot.
+
+1. Install Python 2.7
+2. Install pip
+3. Install Selenium using pip `pip install -U selenium`
+1. `cd Source && python Player/slumbot_player.py localhost 16177`
+2. Wait for enough data to be generated.
+3. `th Training/raw_converter.lua 4`
+
+## Testing deeper-stacker source code
+
+There are a few tests defined:
+1. Install `luarocks install busted`
+2. `cd Source && busted --no-auto-insulate`
+
 ## Differences from the original paper
 
-- A river model was used instead of solving directly from the turn
-- Different neural net architecture
-  - Batch normalization layers were added in between hidden layers because they were found to improve huber loss
+- A river model was used instead of solving directly from the turn.
+- Different neural net architecture.
+  - Batch normalization layers were added in between hidden layers because they were found to improve huber loss.
   - Only 3 hidden layers were used. Additional layers didn't improve huber loss, in agreement with the paper.
-- Preflop solving was done with auxiliary network only, whereas paper used 20 iterations of flop network
-  - Because of this, the cfvs for a given flop must be calculated after seeing it by solving the preflop again with the current flop in mind
-- During re-solving, the opponent ranges were not warm started
+- Preflop solving was done with auxiliary network only, whereas paper used 20 iterations of flop network.
+  - Because of this, the cfvs for a given flop must be calculated after seeing it by solving the preflop again with the current flop in mind.
+- During re-solving, the opponent ranges were not warm started.
 
 ## Future work
 

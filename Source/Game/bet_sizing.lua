@@ -29,7 +29,7 @@ function BetSizing:get_possible_bets(node)
   local opponent = 3 - node.current_player
   local opponent_bet = node.bets[opponent]
 
-  --assert(node.bets[current_player] <= opponent_bet)
+  assert(node.bets[current_player] <= opponent_bet)
 
   --compute min possible raise size
   local max_raise_size = arguments.stack - opponent_bet

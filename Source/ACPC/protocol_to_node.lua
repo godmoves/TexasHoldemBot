@@ -431,11 +431,8 @@ end
 --
 -- * `bet1`, `bet2`: the number of chips committed by each player
 function ACPCProtocolToNode:parse_state(state)
-
-  local parsed_state = self:_parse_state(state)
-  local processed_state = self:_process_parsed_state(parsed_state)
-
-  return processed_state
+  
+  return self:_process_parsed_state(self:_parse_state(state))
 end
 
 --- Gets a representation of the public tree node which corresponds to a

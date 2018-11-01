@@ -19,10 +19,10 @@ while true do
 
   connection:send(msg .. '\r\n') 
 
-  local out, status = connection:receive(1)
+  local out, status = connection:receive('*l')
 
   print("msg received")
-  print(status)
+  print(out, status)
 
 
   collectgarbage()
