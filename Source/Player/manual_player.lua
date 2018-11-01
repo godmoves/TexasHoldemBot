@@ -1,6 +1,6 @@
 local arguments = require 'Settings.arguments'
-local constants = require "Settings.constants"
-require "ACPC.acpc_game"
+local constants = require 'Settings.constants'
+require 'ACPC.acpc_game'
 
 --1.0 create the ACPC game and connect to the server
 

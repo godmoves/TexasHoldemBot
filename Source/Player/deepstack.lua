@@ -2,8 +2,8 @@
 -- @script deepstack
 
 local arguments = require 'Settings.arguments'
-require "ACPC.acpc_game"
-require "Player.continual_resolving"
+require 'ACPC.acpc_game'
+require 'Player.continual_resolving'
 
 local port = 0
 if #arg > 0 then

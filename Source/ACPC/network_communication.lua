@@ -3,8 +3,8 @@
 -- Requires [luasocket](http://w3.impa.br/~diego/software/luasocket/)
 -- (can be installed with `luarocks install luasocket`).
 -- @classmod network_communication
-local arguments = require "Settings.arguments"
-local socket = require "socket"
+local arguments = require 'Settings.arguments'
+local socket = require 'socket'
 
 local ACPCNetworkCommunication = torch.class('ACPCNetworkCommunication')
 

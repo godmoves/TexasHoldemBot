@@ -7,7 +7,7 @@ require 'Lookahead.resolving'
 require 'TerminalEquity.terminal_equity'
 
 local arguments = require 'Settings.arguments'
-local constants = require "Settings.constants"
+local constants = require 'Settings.constants'
 local game_settings = require 'Settings.game_settings'
 local card_tools = require 'Game.card_tools'
 local card_to_string = require 'Game.card_to_string_conversion'

@@ -6,7 +6,7 @@
 require 'ACPC.network_communication'
 require 'ACPC.protocol_to_node'
 local arguments = require 'Settings.arguments'
-local constants = require "Settings.constants"
+local constants = require 'Settings.constants'
 
 --if you want to fake what messages the acpc dealer sends, put them in the following list and uncomment it.
 --{"MATCHSTATE:0:99::Kh|/", "MATCHSTATE:0:99:cr200:Kh |/", "MATCHSTATE:0:99:cr200:Kh|/Ks"}

@@ -3,10 +3,10 @@
 
 local arguments = require 'Settings.arguments'
 local socket = require("socket")
-local constants = require "Settings.constants"
+local constants = require 'Settings.constants'
 
-require "ACPC.acpc_game"
-require "Player.continual_resolving"
+require 'ACPC.acpc_game'
+require 'Player.continual_resolving'
 
 --1.0 create the ACPC game and connect to the server
 local acpc_game = ACPCGame()

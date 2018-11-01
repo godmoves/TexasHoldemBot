@@ -1,4 +1,3 @@
-_G.myglobal = false
 require 'ACPC.protocol_to_node'
 
 describe('ACPC.protocol_to_node class', function()
@@ -19,4 +18,3 @@ describe('ACPC.protocol_to_node class', function()
 
   end)
 end)
-

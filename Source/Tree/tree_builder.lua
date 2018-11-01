@@ -1,4 +1,4 @@
---- Builds a public tree for Leduc Hold'em or variants.
+--- Builds a public tree.
 --
 -- Each node of the tree contains the following fields:
 --

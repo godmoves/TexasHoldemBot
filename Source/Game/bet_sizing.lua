@@ -33,9 +33,7 @@ function BetSizing:get_possible_bets(node)
 
   --compute min possible raise size
   local max_raise_size = arguments.stack - opponent_bet
-  local min_raise_size = opponent_bet - node.bets[current_player]
-  min_raise_size = math.max(min_raise_size, arguments.ante)
-  min_raise_size = math.min(max_raise_size, min_raise_size)
+  local min_raise_size = math.min(max_raise_size, math.max(opponent_bet - node.bets[current_player], arguments.ante))
 
   if min_raise_size == 0 then
     return arguments.Tensor()
@@ -47,6 +45,9 @@ function BetSizing:get_possible_bets(node)
     --iterate through all bets and check if they are possible
 
     local fractions = {}
+
+    assert(node.num_bets, 'num_bets in node is not specified')
+
     if node.num_bets == 0 then
       fractions = self.pot_fractions[1]
     elseif node.num_bets == 1 then
@@ -54,6 +55,8 @@ function BetSizing:get_possible_bets(node)
     else
       fractions = self.pot_fractions[3]
     end
+
+    assert(fractions, 'No pot fractions defined for num_bets == ' .. node.num_bets)
     
     --we can always go allin
     local max_possible_bets_count = #fractions + 1

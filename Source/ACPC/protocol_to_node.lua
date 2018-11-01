@@ -5,10 +5,10 @@
 -- <http://www.computerpokercompetition.org/downloads/documents/protocols/protocol.pdf>.
 -- @classmod protocol_to_node
 local arguments = require 'Settings.arguments'
-local constants = require "Settings.constants"
+local constants = require 'Settings.constants'
 local tools = require 'tools'
 local card_tools = require 'Game.card_tools'
-local card_to_string = require "Game.card_to_string_conversion"
+local card_to_string = require 'Game.card_to_string_conversion'
 
 local ACPCProtocolToNode = torch.class('ACPCProtocolToNode')
 

@@ -1,18 +1,17 @@
 --- Converts between string and numeric representations of cards.
 -- @module card_to_string_conversion
 
-require "string"
-require "torch"
+require 'string'
+require 'torch'
 local arguments = require 'Settings.arguments'
 local game_settings =  require 'Settings.game_settings'
 
 local M = {}
 
----All possible card suits - only the first 2 are used in Leduc Hold'em.
+--- All possible card suits
 M.suit_table = {'c', 'd', 'h', 's'}
 
----All possible card ranks - only the first 3-4 are used in Leduc Hold'em and
--- variants.
+--- All possible card ranks
 M.rank_table = {'2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A'}
 
 --- Gets the suit of a card.

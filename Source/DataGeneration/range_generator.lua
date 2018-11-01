@@ -1,8 +1,8 @@
 --- Samples random probability vectors for use as player ranges.
 -- @classmod range_generator
 
-require "math"
-require "torch"
+require 'math'
+require 'torch'
 local arguments = require 'Settings.arguments'
 local game_settings = require 'Settings.game_settings'
 local evaluator = require 'Game.Evaluation.evaluator'
@@ -32,8 +32,8 @@ function RangeGenerator:_generate_recursion(cards, mass)
     local mass1 = mass:clone():cmul(rand)
     mass1[torch.lt(mass1, 0.00001)] = 0
     mass1[torch.gt(mass1, 0.99999)] = 1
-    local mass2 = mass -mass1
-    local halfSize = card_count/2
+    local mass2 = mass - mass1
+    local halfSize = card_count / 2
     --if the tensor contains an odd number of cards, randomize which way the
     --middle card goes
     if halfSize % 1 ~= 0 then
