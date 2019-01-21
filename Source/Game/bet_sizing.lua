@@ -46,7 +46,7 @@ function BetSizing:get_possible_bets(node)
 
     local fractions = {}
 
-    assert(node.num_bets, 'num_bets in node is not specified')
+    --assert(node.num_bets, 'num_bets in node is not specified')
 
     if node.num_bets == 0 then
       fractions = self.pot_fractions[1]
@@ -56,7 +56,7 @@ function BetSizing:get_possible_bets(node)
       fractions = self.pot_fractions[3]
     end
 
-    assert(fractions, 'No pot fractions defined for num_bets == ' .. node.num_bets)
+    --assert(fractions, 'No pot fractions defined for num_bets == ' .. node.num_bets)
     
     --we can always go allin
     local max_possible_bets_count = #fractions + 1
