@@ -53,7 +53,7 @@ function NextRoundValuePre:_init_bucketing(board)
       self.board_buckets[{idx,{}}]:copy(bucketer:compute_buckets(board))
     end
     print('Cache Board Buckets')
-    torch.save(self.board_buckets,'./Nn/Bucketing/board_buckets.dat')
+    torch.save('./Nn/Bucketing/board_buckets.dat', self.board_buckets)
   end
   
   self.impossible_mask = torch.lt(self.board_buckets,0)
